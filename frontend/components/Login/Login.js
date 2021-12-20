@@ -1,9 +1,21 @@
 import { useState } from "react";
 import axios from "axios";
 
-import { Flex, Box, Heading, FormControl, FormLabel, Input, Button, Text } from "@chakra-ui/react";
+import {
+  Flex,
+  Box,
+  Heading,
+  FormControl,
+  FormLabel,
+  Input,
+  Button,
+  Text,
+  Alert,
+  AlertIcon,
+  AlertDescription,
+} from "@chakra-ui/react";
 
-const API = axios.create({ baseURL: "http://localhost:3050" });
+const API = axios.create({ baseURL: "http://localhost:5000" });
 
 const formInitialState = {
   username: "",
@@ -12,6 +24,7 @@ const formInitialState = {
 
 const Login = () => {
   const [formData, setFormData] = useState(formInitialState);
+  const [badLogin, setBadLogin] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -20,11 +33,12 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      console.log(formData);
-      const result = await API.post("/user/signin", formData);
+      const result = await API.post("/login", formData);
       console.log(result);
     } catch (error) {
-      console.log(error);
+      if (error.response.status === 400) {
+        setBadLogin(true);
+      }
     }
   };
 
@@ -39,6 +53,7 @@ const Login = () => {
         borderWidth={1}
         borderRadius={8}
         boxShadow="lg"
+        bg="white"
       >
         <Box textAlign="center">
           <Heading>Login</Heading>
@@ -48,15 +63,29 @@ const Login = () => {
         </Box>
         <Box my={6} textAlign="left">
           <form onSubmit={handleSubmit}>
-            <FormControl>
+            <FormControl id="login-username">
               <FormLabel>Username</FormLabel>
               <Input placeholder="username" onChange={handleChange} name="username" />
             </FormControl>
-            <FormControl mt={6}>
+            <FormControl mt={6} id="login-password">
               <FormLabel>Password</FormLabel>
               <Input type="password" placeholder="******" onChange={handleChange} name="password" />
             </FormControl>
-            <Button width="full" mt={6} type="submit" colorScheme="orange">
+            {badLogin? (
+              <Alert status="error" mt={4}>
+                <AlertIcon />
+                <AlertDescription>
+                  Username atau password salah!
+                </AlertDescription>
+              </Alert>
+            ): null}
+            <Button
+              disabled={formData.username === "" || formData.password === ""}
+              width="full"
+              mt={4}
+              type="submit"
+              colorScheme="orange"
+            >
               Log In
             </Button>
           </form>
