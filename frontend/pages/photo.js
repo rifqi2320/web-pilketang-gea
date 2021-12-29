@@ -1,8 +1,10 @@
-import { Box, Button, Heading, Select, VStack, Text } from "@chakra-ui/react";
+import { Box, Button, Heading, VStack, Text } from "@chakra-ui/react";
 import { RepeatIcon } from "@chakra-ui/icons";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Webcam from "react-webcam";
+
 import Navbar from "../components/Navbar/Navbar";
+import { useRouter } from "next/router";
 
 const initialConstraints = {
   width: 720,
@@ -20,11 +22,12 @@ const photo = () => {
   });
   const [timeLeft, setTimeLeft] = useState(720);
 
+  const router = useRouter();
+
   useEffect(() => {
     navigator.mediaDevices.enumerateDevices().then((devices) => {
       const videoDevices = devices.filter(({ kind }) => kind === "videoinput");
       setDevices({ selected: 0, devicesList: videoDevices });
-      console.log(devices);
       setVideoConstraints({ ...videoConstraints, deviceId: videoDevices[0].deviceId });
     });
   }, []);
@@ -55,7 +58,7 @@ const photo = () => {
   }, [videoRef]);
 
   return (
-    <div>
+    <>
       <Navbar />
       <VStack>
         {devices.devicesList.map((device, idx) => <Text key={idx}>{device.label}</Text>)}
@@ -82,7 +85,7 @@ const photo = () => {
           </Box>
         ) : null}
       </VStack>
-    </div>
+    </>
   );
 };
 

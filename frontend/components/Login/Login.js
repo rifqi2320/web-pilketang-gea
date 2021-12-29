@@ -1,6 +1,4 @@
-import { useState } from "react";
-import axios from "axios";
-
+import { useEffect, useState } from "react";
 import {
   Flex,
   Box,
@@ -13,9 +11,11 @@ import {
   Alert,
   AlertIcon,
   AlertDescription,
+  Spinner,
 } from "@chakra-ui/react";
+import { useRouter } from "next/router";
 
-const API = axios.create({ baseURL: "http://localhost:5000" });
+import { actions, login, useAuthDispatch, useAuthState } from "../../contexts/auth.js";
 
 const formInitialState = {
   username: "",
@@ -26,6 +26,22 @@ const Login = () => {
   const [formData, setFormData] = useState(formInitialState);
   const [badLogin, setBadLogin] = useState(false);
 
+  const dispatch = useAuthDispatch();
+  const { loading, authenticated } = useAuthState();
+
+  const router = useRouter();
+
+  // check if the user is logged in
+  useEffect(() => {
+    if (authenticated) {
+      router.push("/home");
+    }
+  },[loading, authenticated])
+
+  useEffect(() => {
+    dispatch({ type: actions.STOP_LOADING });
+  }, []);
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -33,10 +49,14 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const result = await API.post("/login", formData);
-      console.log(result);
+      const result = await login(dispatch, formData);
+
+      if (!result) return setBadLogin(true);
+
+      router.push("/home");
+      setBadLogin(false);
     } catch (error) {
-      if (error.response.status === 400) {
+      if (error.response?.status === 400) {
         setBadLogin(true);
       }
     }
@@ -71,22 +91,20 @@ const Login = () => {
               <FormLabel>Password</FormLabel>
               <Input type="password" placeholder="******" onChange={handleChange} name="password" />
             </FormControl>
-            {badLogin? (
+            {badLogin ? (
               <Alert status="error" mt={4}>
                 <AlertIcon />
-                <AlertDescription>
-                  Username atau password salah!
-                </AlertDescription>
+                <AlertDescription>Username atau password salah!</AlertDescription>
               </Alert>
-            ): null}
+            ) : null}
             <Button
-              disabled={formData.username === "" || formData.password === ""}
+              disabled={formData.username === "" || formData.password === "" || loading}
               width="full"
               mt={4}
               type="submit"
               colorScheme="orange"
             >
-              Log In
+              {loading ? <Spinner /> : "Log In"}
             </Button>
           </form>
         </Box>

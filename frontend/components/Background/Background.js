@@ -1,13 +1,13 @@
-import { Flex } from "@chakra-ui/react"
+import { Flex } from "@chakra-ui/react";
 
 import styles from "./Background.module.css";
 
-const Background = ({children, ...props}) => {
+const Background = ({ children, ...props }) => {
   return (
     <Flex {...props} className={styles.bg} w="full">
       {children}
     </Flex>
-  )
-}
+  );
+};
 
-export default Background
+export default Background;

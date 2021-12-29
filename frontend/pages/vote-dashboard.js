@@ -5,7 +5,7 @@ import Navbar from "../components/Navbar/Navbar";
 
 const Vote = () => {
   const handleClick = () => {
-    Router.push("/photo");
+    Router.push("/vote");
   };
 
   return (
@@ -24,9 +24,9 @@ const Vote = () => {
             boxShadow="lg"
           >
             <VStack display="flex">
-                <Heading justifyContent="center" mt={4}>
-                  Pemilu HMTG GEA 2021
-                </Heading>
+              <Heading justifyContent="center" mt={4}>
+                Pemilu HMTG GEA 2021
+              </Heading>
               <Container>
                 <Text>
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus in quam augue.
