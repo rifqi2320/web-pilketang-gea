@@ -22,6 +22,8 @@ import { CircularProgress, Image, CircularProgressLabel } from "@chakra-ui/react
 const Count = ({ mode }) => {
   const [dataPaslon, setDataPaslon] = useState({});
   const [dataVoting, setDataVoting] = useState({});
+  const [counting, setCounting] = useState(false);
+  const { loading, authenticated } = useAuthState();
   const router = useRouter();
   const dispatch = useAuthDispatch();
 
@@ -41,16 +43,17 @@ const Count = ({ mode }) => {
         );
       }
     });
-    console.log(dataPaslon);
     var timer = setInterval(() => {
       getCount().then((res) => {
         if (!res) {
-          router.push("/dashboard");  
+          clearInterval(timer);
+          setCounting(false);
         } else {
           if (res.counted === res.total) {
             clearInterval(timer);
           }
           setDataVoting(res);
+          setCounting(true);
         }
       });
     }, 2000);
@@ -60,6 +63,33 @@ const Count = ({ mode }) => {
       clearInterval(timer);
     };
   }, []);
+
+  if (loading || !authenticated) {
+    return <FullPageLoader />;
+  }
+
+  if (!counting) {
+    return (
+      <Background minH={"100vh"} justifyContent={"center"}>
+        <Flex pb={8} justifyContent={"center"} height="full">
+          <Box
+            w={["80vw", "80vw", "80vw", "60vw"]}
+            minW="300px"
+            alignContent={"center"}
+            textAlign={"center"}
+            mt={24}
+            borderWidth={1}
+            borderRadius={8}
+            boxShadow="lg"
+            bg="#ffffff"
+          >
+            <Heading mt={24}>Live Count Belum Dimulai</Heading>
+            <Text mb={24}>Silahkan kembali lagi pada tanggal yang ditentukan</Text>
+          </Box>
+        </Flex>
+      </Background>
+    );
+  }
 
   return (
     <Background minH={"100vh"} justifyContent={"center"}>
