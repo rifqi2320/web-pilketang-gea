@@ -16,6 +16,7 @@ cluster = MongoClient("mongodb+srv://vito:ZBv1zgjEjFtt9k7x@cluster0.epqqw.gcp.mo
 db = cluster["pilketang-gea"]
 data_user = db["users"]
 data_user.delete_many({})
+db["votes"].delete_many({})
 data_user.insert_one({
     "username" : "admin",
     "password" : "admin_" + sha1("admin".encode()).hexdigest()[:16],
