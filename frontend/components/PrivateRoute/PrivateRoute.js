@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useRouter } from "next/router";
+import axios from "axios";
 
 import { useAuthDispatch, useAuthState, actions } from "../../contexts/auth.js";
 import FullPageLoader from "../FullPageLoader/FullPageLoader.js";
@@ -13,22 +14,40 @@ const PrivateRoute = ({ protectedRoutes, children }) => {
   const adminProtected = router.pathname.includes("admin");
 
   // to check for token if switching page
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      const user = localStorage.getItem("user");
-      const type = localStorage.getItem("type");
-      const isVoted = localStorage.getItem("isVoted");
+  const session = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const result = await axios.get("http://localhost:5000/user_data", {
+        headers: { Authorization: "Bearer " + token },
+      });
+      if (result) {
+        localStorage.setItem("user", result.data.username);
+        localStorage.setItem("type", result.data.type);
+        localStorage.setItem("isVoted", result.data.isVoted);
+      }
       dispatch({
         type: actions.LOGIN_SUCCESS,
-        payload: { data: { username: user, password: token, type: type, isVoted: isVoted } },
+        payload: {
+          data: {
+            username: result.data.username,
+            password: result.data.password,
+            type: result.data.type,
+            isVoted: result.data.isVoted,
+          },
+        },
       });
-    } else {
+      return result;
+    } catch (error) {
+      console.log(`Session error: ${error.message}`);
       dispatch({
         type: actions.LOGIN_ERROR,
       });
     }
-  }, []);
+  };
+
+  useEffect(() => {
+    session();
+  }, [router.pathname]);
 
   useEffect(() => {
     if (!loading && !authenticated && pathIsProtected) {
@@ -40,10 +59,10 @@ const PrivateRoute = ({ protectedRoutes, children }) => {
   }, [loading, authenticated, pathIsProtected, type]);
 
   if (adminProtected && type !== "admin") {
-    return <FullPageLoader />
+    return <FullPageLoader />;
   }
 
-  if ((loading || !authenticated) && (pathIsProtected)) {
+  if ((loading || !authenticated) && pathIsProtected) {
     return <FullPageLoader />;
   }
 

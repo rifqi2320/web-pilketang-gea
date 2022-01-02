@@ -41,17 +41,18 @@ const Vote = () => {
 
   const handleSubmit = async () => {
     try {
+      console.log(formData);
       const result = await API.post("/vote", formData);
     } catch (error) {
       console.log(`vote error: ${error.message}`);
     }
   };
 
-  if (typeof window !== undefined) {
-    if (isVoted !== "0" && isVoted !== undefined) {
-      return <DoneVote />;
-    }
-  }
+  // if (typeof window !== undefined) {
+  //   if (isVoted !== "0" && isVoted !== undefined) {
+  //     return <DoneVote />;
+  //   }
+  // }
 
   switch (step) {
     case 0:
