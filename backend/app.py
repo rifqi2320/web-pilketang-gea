@@ -75,10 +75,8 @@ def vote():
     
     bph_id = request.json.get('bph_id')
     senator_id = request.json.get('senator_id')
-    vote_status = request.json.get('vote_status')
-    if not vote_status:
-      vote_status = 0
     img_data = request.json.get('img_data')
+    timeTaken = request.json.get('timeTaken')
     im = Image.open(BytesIO(b64decode(img_data.split("data:image/jpeg;base64,")[1])))
     im.save("static/uploads/temp.jpg")
     photo = drive.CreateFile(
@@ -96,7 +94,7 @@ def vote():
       "senator_id" : senator_id,
       "timestamp" : datetime.now().strftime("%d-%b-%Y (%H:%M:%S)"),
       "img_url" : photo.metadata['alternateLink'].replace("https://drive.google.com/file/d/", "https://drive.google.com/uc?export=view&id=").replace("/view?usp=drivesdk", ""),
-      "status" : vote_status
+      "timeTaken" : timeTaken
     }
     db["votes"].insert_one(vote)
     db["users"].find_one_and_update({"username" : username}, {
