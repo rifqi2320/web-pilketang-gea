@@ -27,13 +27,16 @@ const Login = () => {
   const [badLogin, setBadLogin] = useState(false);
 
   const dispatch = useAuthDispatch();
-  const { loading, authenticated } = useAuthState();
+  const { loading, authenticated, type } = useAuthState();
 
   const router = useRouter();
 
   // check if the user is logged in
   useEffect(() => {
     if (authenticated) {
+      if (type === "admin") {
+        return router.push("/admin/dashboard");
+      }
       router.push("/home");
     }
   },[loading, authenticated])
@@ -53,6 +56,8 @@ const Login = () => {
 
       if (!result) return setBadLogin(true);
 
+      if (type === "admin") return router.push("/admin/dashboard");
+      
       router.push("/home");
       setBadLogin(false);
     } catch (error) {

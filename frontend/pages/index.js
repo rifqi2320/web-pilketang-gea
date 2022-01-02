@@ -1,11 +1,14 @@
-import { Heading } from "@chakra-ui/layout"
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 
-const index = () => {
-  return (
-    <div>
-      <Heading>Hello</Heading>
-    </div>
-  )
-}
+const Index = () => {
+  const router = useRouter();
 
-export default index
+  useEffect(() => {
+    router.push("/home");
+  }, []);
+
+  return <></>;
+};
+
+export default Index;

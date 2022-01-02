@@ -67,7 +67,7 @@ const StepOne = ({ onNext, changeStep }) => {
 
   const handleClick = () => {
     onNext(selectedCandidates);
-    changeStep(2);
+    changeStep(1);
   };
 
   return (
@@ -86,7 +86,7 @@ const StepOne = ({ onNext, changeStep }) => {
           <Stack width="full" alignContent="center" p={4}>
             <Flex borderWidth={1} borderColor="#f4f4f4" width="full" borderRadius={4}>
               <Heading m={12} mt={2} mb={2} textAlign="center" width="full">
-                Vote Senator
+                Vote Ketua BPH
               </Heading>
             </Flex>
             <Flex>

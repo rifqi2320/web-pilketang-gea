@@ -1,16 +1,24 @@
-import { Flex, Box, Button, Heading, VStack, Text } from "@chakra-ui/react";
+import { Flex, Box, Button, Heading, VStack, Text, Image } from "@chakra-ui/react";
 import { RepeatIcon } from "@chakra-ui/icons";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Webcam from "react-webcam";
-import { useRouter } from "next/router";
 
 const initialConstraints = {
-  // width: 720,
-  // height: 480,
   deviceId: null,
 };
 
-const Photo = () => {
+const Preview = ({ src }) => {
+  return (
+    <Flex justifyContent="center" pt={16} alignItems="center" flexDir="column">
+      <Heading width="full" textAlign="center">
+        Preview
+      </Heading>
+      <Image src={src} />
+    </Flex>
+  );
+};
+
+const Photo = ({ onCapture }) => {
   const videoRef = useRef(null);
   const [photo, setPhoto] = useState({ captured: false, src: "" });
   const [videoConstraints, setVideoConstraints] = useState(initialConstraints);
@@ -45,18 +53,17 @@ const Photo = () => {
     setVideoConstraints({ ...videoConstraints, deviceId: currentVideoDevice });
   };
 
-  const handleList = () => {
-    console.log(devices);
-    console.log(videoConstraints);
+  const handleCapture = () => {
+    if (!photo.captured) {
+      return shoot();
+    }
+    setPhoto({ captured: false, src: "" });
   };
 
-  const handleSubmit = () => {
-
-  }
-
-  const handleCapture = useCallback(() => {
-    const imageSrc = videoRef.current.getScreenshot();
+  const shoot = useCallback(() => {
+    const imageSrc = videoRef.current?.getScreenshot();
     setPhoto({ captured: true, src: imageSrc });
+    onCapture(imageSrc);
   }, [videoRef]);
 
   return (
@@ -84,29 +91,26 @@ const Photo = () => {
           <Heading w="full">Validasi Voting</Heading>
           <Text mt={2}>Validasi hasil vote Anda dengan bukti foto</Text>
         </Flex>
-        <VStack>
+        <VStack mb={4}>
           <Box pb={4} pt={4}>
             <Button onClick={handleChange}>
               <Text mr={4}>Ganti Kamera</Text>
               <RepeatIcon />
             </Button>
           </Box>
-          <Flex mt={12} boxShadow="md">
-            <Webcam
-              forceScreenshotSourceSize
-              ref={videoRef}
-              screenshotFormat="image/jpeg"
-              videoConstraints={videoConstraints}
-            />
-          </Flex>
-          <Button onClick={handleCapture}>Capture</Button>
           {photo.captured ? (
-            <Flex justifyContent="center" pt={16} alignItems="center" flexDir="column">
-              <Heading width="full" textAlign="center">Preview</Heading>
-              <img src={photo.src} />
-              <Button onCLick={handleSubmit} mt={2} mb={4}>Submit</Button>
+            <Preview src={photo.src} />
+          ) : (
+            <Flex mt={12} boxShadow="md">
+              <Webcam
+                forceScreenshotSourceSize
+                ref={videoRef}
+                screenshotFormat="image/jpeg"
+                videoConstraints={videoConstraints}
+              />
             </Flex>
-          ) : null}
+          )}
+          <Button onClick={handleCapture}>{photo.captured ? "Capture Ulang" : "Capture"}</Button>
         </VStack>
       </Flex>
     </Flex>

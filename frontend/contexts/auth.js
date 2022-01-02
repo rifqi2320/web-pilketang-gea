@@ -48,18 +48,6 @@ export const AuthProvider = ({ children }) => {
     loading: true,
   });
 
-  // to check for token if switching page
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      const user = localStorage.getItem("user");
-      dispatch({
-        type: actions.LOGIN_SUCCESS,
-        payload: { data: { username: user, password: token } },
-      });
-    }
-  }, []);
-
   return (
     <AuthStateContext.Provider value={state}>
       <AuthDispatchContext.Provider value={dispatch}>{children}</AuthDispatchContext.Provider>

@@ -127,7 +127,6 @@ const Navbar = ({ children, ...props }) => {
             size="sm"
             colorScheme="gray"
             textColor="orange"
-            outline="none"
             onClick={handleLogout}
           >
             Logout
