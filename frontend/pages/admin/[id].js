@@ -1,4 +1,14 @@
-import { Flex, Heading, Text, Image, HStack, Button, Alert, AlertIcon } from "@chakra-ui/react";
+import {
+  Flex,
+  Link,
+  Heading,
+  Text,
+  Image,
+  HStack,
+  Button,
+  Alert,
+  AlertIcon,
+} from "@chakra-ui/react";
 import { CheckIcon, CloseIcon, DeleteIcon } from "@chakra-ui/icons";
 import moment from "moment";
 import { useRouter } from "next/router";
@@ -6,31 +16,32 @@ import { useRouter } from "next/router";
 import Background from "../../components/Background/Background";
 import { useEffect, useState } from "react";
 import { useAuthState } from "../../contexts/auth";
+import axios from "axios";
 
 const User = () => {
   const router = useRouter();
   const { id } = router.query;
-  const { loading } = useAuthState();
+  const { loading, token } = useAuthState();
 
-  const [userData, setUserData] = useState({ nim: null, nama: null, isVoted: null, image: null });
+  const [userData, setUserData] = useState({});
+  const [voteData, setVoteData] = useState({});
+
+  const API = axios.create({
+    baseURL: "http://localhost:5000",
+    headers: {
+      Authorization: "Bearer " + token,
+    },
+  });
 
   useEffect(() => {
-    if (!router.isReady) return;
-
-    const fetchData = async () => {
-      try {
-        if (id) {
-          console.log(`id: ${id}`);
-          const res = await fetch(`http://localhost:3000/${id}.json`);
-          const data = await JSON.parse(res);
-          setUserData(data);
-        }
-      } catch (error) {
-        console.log(error.message);
-      }
-    };
-    fetchData();
-  }, [router.isReady, id]);
+    console.log(`id: ${id}`);
+    API.post("/get_user", { nim: id })
+      .then((res) => setUserData(res.data.data))
+      .catch((err) => console.log(err));
+    API.post("/get_vote", { nim: id })
+      .then((res) => setVoteData(res.data.data))
+      .catch((err) => console.log(err));
+  }, [id]);
 
   return (
     <Background>
@@ -42,51 +53,57 @@ const User = () => {
           bg="white"
           flexDir="column"
           alignItems="center"
-          mt={8}
+          mt={2}
         >
+          <Link textAlign={"left"} w="100%" pl={4} pt={4} href={"/admin/search"}>
+            {"<<< Back"}
+          </Link>
           <Flex flexDir="column" textAlign="center" mb={4} p={4} pt={0}>
-            <Heading p={8} pb={0}>
-              {userData.nim}
+            <Heading px={8} pb={0}>
+              {userData.username}
             </Heading>
-            <Text fontWeight="semibold" fontSize={24}>
-              {userData.nama}
+          </Flex>
+          {userData.isVoted === 0 ? (
+            <Text pb={8} px={4} fontSize={"xl"}>
+              Peserta belum menggunakan suaranya
             </Text>
-          </Flex>
-          <Flex
-            m={8}
-            mt={2}
-            flexDir="column"
-            alignItems="center"
-            borderColor="#cccccc"
-            borderWidth={1}
-          >
-            <Image src={userData.image} htmlWidth="500px" />
-          </Flex>
-          {userData.isVoted === 0 ? null : (
-            <Flex pl={8} pr={8}>
-              <Alert status="success">
-                <AlertIcon />
-                <Flex flexDir="column" textAlign="center">
-                  <Text>Peserta ini telah diverifikasi dengan status: {userData.isVoted}</Text>
-                  <Text>{moment().format("MMMM Do YYYY, h:mm:ss a")} </Text>
-                </Flex>
-              </Alert>
-            </Flex>
+          ) : (
+            <>
+              <Flex
+                m={8}
+                mt={2}
+                flexDir="column"
+                alignItems="center"
+                borderColor="#cccccc"
+                borderWidth={1}
+              >
+                <Image src={voteData.img_url} htmlWidth="500px" />
+              </Flex>
+              <Flex pl={8} pr={8}>
+                <Alert status="success">
+                  <AlertIcon />
+                  <Flex flexDir="column" textAlign="center">
+                    <Text>Peserta ini telah diverifikasi dengan status: {userData.isVoted}</Text>
+                    <Text>{moment().format("MMMM Do YYYY, h:mm:ss a")} </Text>
+                  </Flex>
+                </Alert>
+              </Flex>
+              <HStack p={6} spacing="24px">
+                <Button colorScheme="teal" variant="outline">
+                  <Text mr={2}>Valid</Text>
+                  <CheckIcon />
+                </Button>
+                <Button colorScheme="yellow" variant="outline">
+                  <Text mr={2}>Tidak Valid</Text>
+                  <CloseIcon />
+                </Button>
+                <Button colorScheme="red" variant="outline">
+                  <Text mr={2}>Buang Suara</Text>
+                  <DeleteIcon />
+                </Button>
+              </HStack>
+            </>
           )}
-          <HStack p={6} spacing="24px">
-            <Button colorScheme="teal" variant="outline">
-              <Text mr={2}>Valid</Text>
-              <CheckIcon />
-            </Button>
-            <Button colorScheme="yellow" variant="outline">
-              <Text mr={2}>Tidak Valid</Text>
-              <CloseIcon />
-            </Button>
-            <Button colorScheme="red" variant="outline">
-              <Text mr={2}>Buang Suara</Text>
-              <DeleteIcon />
-            </Button>
-          </HStack>
         </Flex>
       </Flex>
     </Background>
