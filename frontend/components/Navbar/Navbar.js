@@ -108,9 +108,9 @@ const Navbar = ({ children, ...props }) => {
           height="100%"
           display={["none", "none", "flex", "flex"]}
         >
-          <DesktopMenuItem to="/home">Dashboard</DesktopMenuItem>
-          <DesktopMenuItem to="/vote-dashboard" id="votenow">
-            Vote Now
+          <DesktopMenuItem to="/dashboard">Dashboard</DesktopMenuItem>
+          <DesktopMenuItem to="/count-bph" id="votenow">
+            Live Count
           </DesktopMenuItem>
         </HStack>
         <Spacer display={["none", "none", "flex", "flex"]} />
@@ -149,8 +149,8 @@ const Navbar = ({ children, ...props }) => {
             <DrawerCloseButton />
             <DrawerHeader>12020000 - John Doe</DrawerHeader>
             <DrawerBody>
-              <MobileMenuItem to="/home">Dashboard</MobileMenuItem>
-              <MobileMenuItem to="/vote-dashboard">Vote</MobileMenuItem>
+              <MobileMenuItem to="/dashboard">Dashboard</MobileMenuItem>
+              <MobileMenuItem to="/count-bph">Live Count</MobileMenuItem>
               <MobileMenuItem to="/login" onClick={handleLogout}>
                 Logout
               </MobileMenuItem>

@@ -6,7 +6,7 @@ import "../styles/globals.css";
 import { theme } from "../styles/theme.js";
 
 function MyApp({ Component, pageProps }) {
-  const protectedRoutes = ['/', '/home', '/vote', '/vote-dashboard'];
+  const protectedRoutes = ['/', '/home', '/vote', '/dashboard', '/count-bph', '/count-senator'];
 
   return (
     <ChakraProvider theme={theme}>

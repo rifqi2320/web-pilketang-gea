@@ -37,7 +37,7 @@ const Login = () => {
       if (type === "admin") {
         return router.push("/admin/dashboard");
       }
-      router.push("/home");
+      router.push("/dashboard");
     }
   },[loading, authenticated])
 
@@ -58,7 +58,7 @@ const Login = () => {
 
       if (type === "admin") return router.push("/admin/dashboard");
       
-      router.push("/home");
+      router.push("/dashboard");
       setBadLogin(false);
     } catch (error) {
       if (error.response?.status === 400) {

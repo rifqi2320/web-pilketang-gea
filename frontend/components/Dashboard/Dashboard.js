@@ -15,26 +15,17 @@ import Background from "../Background/Background";
 import { React, useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { getVoteStat } from "../../contexts/data";
-import FullPageLoader from "../FullPageLoader/FullPageLoader";
 import { actions, useAuthDispatch, useAuthState } from "../../contexts/auth";
 
 const Dashboard = () => {
   const [voteData, setVoteData] = useState(null);
   const [isVoted, setIsVoted] = useState(null);
-  const { loading, authenticated } = useAuthState();
   const router = useRouter();
   const dispatch = useAuthDispatch();
 
   useEffect(() => {
-    if (!loading && !authenticated) {
-      router.push("/login");
-    }
-  }, [authenticated, loading]);
-
-  useEffect(() => {
     dispatch({ type: actions.STOP_LOADING });
     setIsVoted(localStorage.getItem("isVoted"));
-    console.log(isVoted);
     getVoteStat()
       .then((res) => {
         setVoteData(res);
@@ -42,8 +33,8 @@ const Dashboard = () => {
       .catch((err) => console.error(err));
   }, []);
 
-  if (loading || !authenticated) {
-    return <FullPageLoader />;
+  const handleClick = () => {
+    router.push('/vote');
   }
 
   return (
@@ -112,6 +103,7 @@ const Dashboard = () => {
                     textColor="orange"
                     outline="orange"
                     variant={"outline"}
+                    onClick={handleClick}
                   >
                     Vote Sekarang
                   </Button>

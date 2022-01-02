@@ -35,7 +35,7 @@ const PrivateRoute = ({ protectedRoutes, children }) => {
       router.push("/login");
     }
     if (adminProtected && type !== "admin" && !loading) {
-      router.push("/home");
+      router.push("/dashboard");
     }
   }, [loading, authenticated, pathIsProtected, type]);
 

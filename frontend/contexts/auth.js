@@ -56,7 +56,6 @@ export const AuthProvider = ({ children }) => {
 };
 
 const reducer = (state, action) => {
-  console.log(state);
   switch (action.type) {
     case actions.REQUEST_LOGIN:
       return {

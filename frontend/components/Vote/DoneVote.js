@@ -5,7 +5,7 @@ import Background from "../Background/Background";
 
 const DoneVote = () => {
   const handleClick = () => {
-    Router.push("/home");
+    Router.push("/dashboard");
   }
 
   return (

@@ -22,15 +22,8 @@ import { CircularProgress, Image, CircularProgressLabel } from "@chakra-ui/react
 const Count = ({ mode }) => {
   const [dataPaslon, setDataPaslon] = useState({});
   const [dataVoting, setDataVoting] = useState({});
-  const { loading, authenticated } = useAuthState();
   const router = useRouter();
   const dispatch = useAuthDispatch();
-
-  useEffect(() => {
-    if (!loading && !authenticated) {
-      router.push("/login");
-    }
-  }, [authenticated, loading]);
 
   useEffect(() => {
     getPaslonData().then((data_paslon) => {
@@ -52,7 +45,7 @@ const Count = ({ mode }) => {
     var timer = setInterval(() => {
       getCount().then((res) => {
         if (!res) {
-          router.push("/dashboard");
+          router.push("/dashboard");  
         } else {
           if (res.counted === res.total) {
             clearInterval(timer);
@@ -68,9 +61,6 @@ const Count = ({ mode }) => {
     };
   }, []);
 
-  if (loading || !authenticated) {
-    return <FullPageLoader />;
-  }
   return (
     <Background minH={"100vh"} justifyContent={"center"}>
       <Flex pb={8} justifyContent={"center"} height="full">
@@ -93,7 +83,7 @@ const Count = ({ mode }) => {
               </Text>
             </Link>
           ) : (
-            <Link href={"/count_senator"}>
+            <Link href={"/count-senator"}>
               <Text textAlign="right" mx={5}>
                 {"Senator >>>"}
               </Text>
