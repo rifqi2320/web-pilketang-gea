@@ -18,6 +18,7 @@ for i in range(N):
     "senator_id" : senator_id,
     "timestamp" : datetime.now().strftime("%d-%b-%Y (%H:%M:%S)"),
     "img_url" : "no",
+    "timeTaken" : 0,
     "status" : 2
   }
   db["votes"].insert_one(data)
