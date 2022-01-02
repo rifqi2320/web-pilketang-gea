@@ -94,7 +94,8 @@ def vote():
       "senator_id" : senator_id,
       "timestamp" : datetime.now().strftime("%d-%b-%Y (%H:%M:%S)"),
       "img_url" : photo.metadata['alternateLink'].replace("https://drive.google.com/file/d/", "https://drive.google.com/uc?export=view&id=").replace("/view?usp=drivesdk", ""),
-      "timeTaken" : timeTaken
+      "timeTaken" : timeTaken,
+      "status" : 0
     }
     db["votes"].insert_one(vote)
     db["users"].find_one_and_update({"username" : username}, {
@@ -162,18 +163,37 @@ def reviewVote():
   else:
     return {}, 400
 
-@app.route("/get_queue_votes")
+@app.route("/get_vote")
 @jwt_required()
 def get_queue_votes():
   identity = get_jwt_identity()
   if identity != "admin":
     return {}, 401
-  votes = db["votes"].find({"status" : 0})
+  nim = request.json.get("nim")
+  votes = db["votes"].find_one({"nim" : nim})
   if votes:
     res = {
       "timestamp" : datetime.now().strftime("%d-%b-%Y (%H:%M:%S)"),
-      "data" : [x for x in votes]
+      "data" : votes
     }
+    return res, 200
+  else:
+    return {}, 204
+
+@app.route("/get_users")
+@jwt_required()
+def get_users():
+  identity = get_jwt_identity()
+  if identity != "admin":
+    return {}, 404
+  users = db["users"].find({})
+  if users:
+    res = {
+      "timestamp" : datetime.now().strftime("%d-%b-%Y (%H:%M:%S)"),
+      "data" : [x for x in users]
+    }
+    for p in res["data"]:
+      p.pop("_id", None)
     return res, 200
   else:
     return {}, 204
