@@ -6,6 +6,9 @@ from pydrive.drive import GoogleDrive
 from oauth2client.service_account import ServiceAccountCredentials
 from datetime import datetime
 from pymongo import MongoClient
+from PIL import Image
+from io import BytesIO
+from base64 import b64decode
 
 # GDrive Stuff
 gauth = GoogleAuth()
@@ -47,24 +50,37 @@ def login():
   else:
     return {}, 400
 
+@app.route("/user_data")
+@jwt_required()
+def get_user_data():
+  username = get_jwt_identity()
+  user = db["users"].find_one({"username":username})
+  if user:
+    res = user
+    res.pop("_id", None)
+    res.pop("password", None)
+    return res, 200
+  else:
+    return {}, 400
+
 @app.route("/vote", methods=['POST'])
 @jwt_required()
 def vote():
   username = get_jwt_identity()
   user = db["users"].find_one({"username" : username})
   if user:
-    if user["isVoted"] % 2 != 0:
+    if user["isVoted"] == 1 or user["isVoted"] == 3:
+      print(user)
       return {}, 401
-    db["users"].find_one_and_update({"username" : username}, {
-      "$set" : {"isVoted" : 1}
-    })
-    bph_id = request.form.get('bph_id')
-    senator_id = request.form.get('senator_id')
-    vote_status = request.form.get('vote_status')
+    
+    bph_id = request.json.get('bph_id')
+    senator_id = request.json.get('senator_id')
+    vote_status = request.json.get('vote_status')
     if not vote_status:
       vote_status = 0
-    file = request.files.get('img')
-    file.save("static/uploads/temp.jpg")
+    img_data = request.json.get('img_data')
+    im = Image.open(BytesIO(b64decode(img_data.split("data:image/jpeg;base64,")[1])))
+    im.save("static/uploads/temp.jpg")
     photo = drive.CreateFile(
       {
         "title" : "{}".format(username),
@@ -79,10 +95,13 @@ def vote():
       "bph_id" : bph_id,
       "senator_id" : senator_id,
       "timestamp" : datetime.now().strftime("%d-%b-%Y (%H:%M:%S)"),
-      "img_url" : photo.metadata['alternateLink'],
+      "img_url" : photo.metadata['alternateLink'].replace("https://drive.google.com/file/d/", "https://drive.google.com/uc?export=view&id=").replace("/view?usp=drivesdk", ""),
       "status" : vote_status
     }
     db["votes"].insert_one(vote)
+    db["users"].find_one_and_update({"username" : username}, {
+      "$set" : {"isVoted" : 1}
+    })
     return {}, 202
   else:
     return {}, 400
@@ -102,13 +121,27 @@ def reviewVote():
       db["users"].find_one_and_update(
         {"username" : username},
         {
-          "$set" : {"isVoted" : 3} # User ditandai sudah vote
+          "$set" : {"isVoted" : 4} # User ditandai sudah vote
         }
       )
       db["votes"].find_one_and_update(
         {"username" : username},
         {
           "$set" : {"status" : 2} # Vote ditandai valid
+        }
+      )
+      return {}, 201
+    elif action == "Delete":
+      db["users"].find_one_and_update(
+        {"username" : username},
+        {
+          "$set" : {"isVoted" : 3} # User ditandai dengan vote dihapus
+        }
+      )
+      db["votes"].find_one_and_update(
+        {"username" : username},
+        {
+          "$set" : {"status" : 1} # Vote ditandai tidak valid
         }
       )
       return {}, 201
@@ -147,35 +180,31 @@ def get_queue_votes():
   else:
     return {}, 204
 
-@app.route("/status")
-def send_status():
-  global status_votes
-  if status_votes["Valid"]:
-    return status_votes, 200
+@app.route("/get_paslon")
+def get_paslon():
+  paslon = db["paslon"].find({})
+  if paslon:
+    res = {
+      "timestamp" : datetime.now(),
+      "data" : [x for x in paslon] 
+    }
+    for p in res["data"]:
+      p.pop("_id", None)
+    return res, 200
   else:
-    return get_status_votes(), 200
-  
+    return {}, 204
 
-status_votes = {
-  "Not Voted" : db["users"].count_documents({}) - 1,
-  "Voted" : 0,
-  "In Progress" : 0,
-  "Validated" : -1,
-  "Rejected" : 0,
-  "Valid" : False
-}
-
+@app.route("/status")
 def get_status_votes():
-  global status_votes
-  votes = db["votes"]
+  votes = db["votes"].find({})
   status_votes = {
     "Not Voted" : db["users"].count_documents({}) - 1,
     "Voted" : 0,
     "In Progress" : 0,
     "Validated" : -1,
     "Rejected" : 0,
-    "Valid" : True
   }
+
   for vote in votes:
     temp = vote
     status_votes["Voted"] += 1
@@ -191,17 +220,27 @@ def get_status_votes():
 
 # Untuk Counting
 isCounting = False # State counting
-tempPaslon = [True, True, True] # State paslon
+tempBPH = [True, True]
+tempSenator = [True, True]
 tempVote = [] # Seluruh data counting
 tempTime = datetime.now()
+tempTime2 = datetime.now()
+tempCount = {
+    "timestamp" : tempTime,
+    "bph" : [0 for _ in range(3)],
+    "senator" : [0 for _ in range(3)],
+    "counted" : 0,
+    "total" : len(tempVote)
+  }
+
 
 @app.route("/start_count", methods=["POST"])
-# @jwt_required
+@jwt_required()
 def start_count():
   global isCounting, tempVote, tempTime
-  # identity = get_jwt_identity() 
-  # if identity != "admin":
-  #   return {}, 401
+  identity = get_jwt_identity() 
+  if identity != "admin":
+    return {}, 401
   if not isCounting:
     isCounting = True
     tempVote = [x for x in db["votes"].find({"status" : 2})]
@@ -211,6 +250,7 @@ def start_count():
     return {}, 400
 
 @app.route("/stop_count", methods=["POST"])
+@jwt_required()
 def stop_count():
   global isCounting, tempVote, tempTime
   identity = get_jwt_identity() 
@@ -222,33 +262,54 @@ def stop_count():
   else:
     return {}, 400
 
-def get_vote(arrVote):
-  global tempPaslon
+def get_vote(arrVote, BPH):
+  global tempBPH, tempSenator
   for paslon in arrVote:
     if paslon == -1:
       continue
-    if tempPaslon[paslon]:
-      return paslon
+    if BPH:
+      if tempBPH[paslon]:
+        return paslon
+    else:
+      if tempSenator[paslon]:
+        return paslon
   return -1
+
+def count():
+  global tempCount
+  t = datetime.now()
+  n = int(min(len(tempVote), (t - tempTime).total_seconds()//5))
+  tempCount = {
+    "timestamp" : t.strftime("%d-%b-%Y (%H:%M:%S)"),
+    "bph" : [0 for _ in range(2)],
+    "senator" : [0 for _ in range(2)],
+    "counted" : n,
+    "total" : len(tempVote)
+  }
+  for vote in tempVote[:n]:
+    x = get_vote(vote["bph_id"], True)
+    if x >= 0:
+      tempCount["bph"][x] += 1
+    y = get_vote(vote["senator_id"], False)
+    if y >= 0:
+      tempCount["senator"][y] += 1
+  return tempCount
 
 @app.route("/get_count")
 def get_count():
-  global isCounting, tempVote, tempTime
+  global isCounting, tempVote, tempTime, tempCount
   if isCounting:
     t = datetime.now()
     n = int(min(len(tempVote), (t - tempTime).total_seconds()//5)) # 5 nya waktu per vote terhintung
-    res = {
-      "timestamp" : t.strftime("%d-%b-%Y (%H:%M:%S)"),
-      "data" : [0 for _ in range(3)],
-      "percentage" : 100*n/len(tempVote)
-    }
-    for vote in tempVote[:n]:
-      x = get_vote(vote["paslon_id"])
-      if x >= 0:
-        res["data"][x] += 1
-    return res
+    if n == tempCount["counted"]:
+      res = tempCount
+    else:
+      res = count()
+    return res, 200
   else:
     return {}, 204
+
+  
 
 if __name__ == "__main__":
   app.run(debug=True)

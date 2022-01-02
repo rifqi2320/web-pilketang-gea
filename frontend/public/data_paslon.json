@@ -1,0 +1,30 @@
+{
+  "bph": [
+    {
+      "name": "Ketua BPH 1",
+      "photo": "avatar_placeholder.jpg"
+    },
+    {
+      "name": "Ketua BPH 2",
+      "photo": "avatar_placeholder.jpg"
+    },
+    {
+      "name": "Ketua BPH 3",
+      "photo": "avatar_placeholder.jpg"
+    }
+  ],
+  "senator": [
+    {
+      "name": "Senator 1",
+      "photo": "avatar_placeholder.jpg"
+    },
+    {
+      "name": "Senator 2",
+      "photo": "avatar_placeholder.jpg"
+    },
+    {
+      "name": "Senator 3",
+      "photo": "avatar_placeholder.jpg"
+    }
+  ]
+}
