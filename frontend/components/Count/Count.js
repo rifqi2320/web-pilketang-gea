@@ -15,8 +15,8 @@ import {
   UnorderedList,
   StackDivider,
 } from "@chakra-ui/layout";
-import data_paslon from "../../public/data_paslon.json";
 import { getCount } from "../../contexts/count";
+import { getPaslonData } from "../../contexts/data";
 import { CircularProgress, Image, CircularProgressLabel } from "@chakra-ui/react";
 
 const Count = ({ mode }) => {
@@ -33,11 +33,22 @@ const Count = ({ mode }) => {
   }, [authenticated, loading]);
 
   useEffect(() => {
-    if (mode === "Senator") {
-      setDataPaslon(data_paslon["senator"]);
-    } else {
-      setDataPaslon(data_paslon["bph"]);
-    }
+    getPaslonData().then((data_paslon) => {
+      if (mode === "Senator") {
+        setDataPaslon(
+          data_paslon.data.filter((value, index, array) => {
+            return value.paslon_id.includes("senator");
+          })
+        );
+      } else {
+        setDataPaslon(
+          data_paslon.data.filter((value, index, array) => {
+            return value.paslon_id.includes("bph");
+          })
+        );
+      }
+    });
+    console.log(dataPaslon);
     var timer = setInterval(() => {
       getCount().then((res) => {
         if (!res) {
@@ -105,28 +116,31 @@ const Count = ({ mode }) => {
             </b>
             <br /> Suara terhitung
           </Text>
-          <Flex minChildWidth={"250px"} justifyContent={"center"} wrap={"wrap"}>
-            {dataPaslon.map((item, index) => {
-              let resData = "-";
-              if (dataVoting.senator && dataPaslon) {
-                if (mode === "Senator") {
-                  resData = dataVoting.senator[index];
-                } else {
-                  resData = dataVoting.bph[index];
-                }
-              } else {
-                resData = "-";
-              }
-              return (
-                <Box borderWidth={1} mb={8} mx={[4, 4, 4, 4]} borderRadius={8} w={"175px"}>
-                  <Image src={item.photo} />
-                  <Text>{item.name}</Text>
-                  <Text fontSize={"2rem"} fontFamily={"Roboto"}>
-                    {resData}
-                  </Text>
-                </Box>
-              );
-            })}
+          <Flex justifyContent={"center"} wrap={"wrap"}>
+            {dataPaslon.length
+              ? dataPaslon.map((item, index) => {
+                  let resData = "-";
+                  if (dataVoting.senator && dataPaslon) {
+                    if (mode === "Senator") {
+                      resData = dataVoting.senator[index];
+                    } else {
+                      resData = dataVoting.bph[index];
+                    }
+                  } else {
+                    resData = "-";
+                  }
+                  return (
+                    <Box borderWidth={1} mb={8} mx={[4, 4, 4, 4]} borderRadius={8} w={"175px"}>
+                      <Image src={item.img} />
+                      <Text>{item.name}</Text>
+                      <Text>{item.nim}</Text>
+                      <Text fontSize={"2rem"} fontFamily={"Roboto"}>
+                        {resData}
+                      </Text>
+                    </Box>
+                  );
+                })
+              : ""}
           </Flex>
         </Box>
       </Flex>

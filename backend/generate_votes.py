@@ -6,7 +6,7 @@ N = 100
 # MongoDB Stuff
 cluster = MongoClient("mongodb+srv://vito:ZBv1zgjEjFtt9k7x@cluster0.epqqw.gcp.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
 db = cluster["pilketang-gea"]
-vote = [0,1,2]
+vote = [0,1]
 for i in range(N):
   shuffle(vote)
   bph_id = vote.copy()

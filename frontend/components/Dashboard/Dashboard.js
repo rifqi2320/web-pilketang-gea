@@ -83,29 +83,25 @@ const Dashboard = () => {
                 <Heading m={4} size="lg">
                   Panduan Pemilihan
                 </Heading>
-                <Text>
-                  <OrderedList>
-                    <ListItem>Pergi ke halaman pemilihan dengan menekan "Voting Sekarang"</ListItem>
-                    <ListItem>Pilih kandidat</ListItem>
-                  </OrderedList>
-                </Text>
+                <OrderedList>
+                  <ListItem>Pergi ke halaman pemilihan dengan menekan "Voting Sekarang"</ListItem>
+                  <ListItem>Pilih kandidat</ListItem>
+                </OrderedList>
               </Container>
               <Container p={4}>
-                <Text>
-                  <UnorderedList>
-                    <ListItem>
-                      <Text>Belum voting : {voteData ? voteData["Not Voted"] : "-"}</Text>
-                    </ListItem>
-                    <ListItem>
-                      <Text>
-                        Suara sedang divalidasi : {voteData ? voteData["In Progress"] : "-"}
-                      </Text>
-                    </ListItem>
-                    <ListItem>
-                      <Text>Suara tervalidasi : {voteData ? voteData["Voted"] : "-"}</Text>
-                    </ListItem>
-                  </UnorderedList>
-                </Text>
+                <UnorderedList>
+                  <ListItem>
+                    <Text>Belum voting : {voteData ? voteData["Not Voted"] : "-"}</Text>
+                  </ListItem>
+                  <ListItem>
+                    <Text>
+                      Suara sedang divalidasi : {voteData ? voteData["In Progress"] : "-"}
+                    </Text>
+                  </ListItem>
+                  <ListItem>
+                    <Text>Suara tervalidasi : {voteData ? voteData["Voted"] : "-"}</Text>
+                  </ListItem>
+                </UnorderedList>
                 <Text my={4}>
                   Status Suara Anda : <b>{true ? "Belum Ada" : "Sudah Ada"}</b>
                 </Text>

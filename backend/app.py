@@ -180,6 +180,20 @@ def get_queue_votes():
   else:
     return {}, 204
 
+@app.route("/get_paslon")
+def get_paslon():
+  paslon = db["paslon"].find({})
+  if paslon:
+    res = {
+      "timestamp" : datetime.now(),
+      "data" : [x for x in paslon] 
+    }
+    for p in res["data"]:
+      p.pop("_id", None)
+    return res, 200
+  else:
+    return {}, 204
+
 @app.route("/status")
 def get_status_votes():
   votes = db["votes"].find({})
@@ -206,8 +220,8 @@ def get_status_votes():
 
 # Untuk Counting
 isCounting = False # State counting
-tempBPH = [True, True, True]
-tempSenator = [True, True, True]
+tempBPH = [True, True]
+tempSenator = [True, True]
 tempVote = [] # Seluruh data counting
 tempTime = datetime.now()
 tempTime2 = datetime.now()
@@ -267,8 +281,8 @@ def count():
   n = int(min(len(tempVote), (t - tempTime).total_seconds()//5))
   tempCount = {
     "timestamp" : t.strftime("%d-%b-%Y (%H:%M:%S)"),
-    "bph" : [0 for _ in range(3)],
-    "senator" : [0 for _ in range(3)],
+    "bph" : [0 for _ in range(2)],
+    "senator" : [0 for _ in range(2)],
     "counted" : n,
     "total" : len(tempVote)
   }
