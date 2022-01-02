@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import StepZero from "../components/Vote/StepZero.js";
 import StepOne from "../components/Vote/StepOne.js";
@@ -7,42 +7,48 @@ import Background from "../components/Background/Background.js";
 import Navbar from "../components/Navbar/Navbar.js";
 import { useAuthState } from "../contexts/auth.js";
 import DoneVote from "../components/Vote/DoneVote.js";
-import { Button } from "@chakra-ui/react";
+import axios from "axios";
 
 const initialFormData = {
   bph_id: null,
   senator_id: null,
-  file: null,
+  img_data: null,
+  timeTaken: 0,
 };
 
 const Vote = () => {
-  const [selectedBPH, setSelectedBPH] = useState(null);
-  const [selectedSenator, setSelectedSenator] = useState(null);
   const [formData, setFormData] = useState(initialFormData);
   const [step, setStep] = useState(0);
 
-  const { isVoted } = useAuthState();
+  const { isVoted, token } = useAuthState();
+
+  const API = axios.create({
+    baseURL: "http://localhost:5000",
+    headers: { Authorization: "Bearer " + token },
+  });
 
   const handleSelectedBPH = (candidates) => {
-    setSelectedBPH(candidates);
     setFormData({ ...formData, bph_id: candidates });
   };
 
   const handleSelectedSenator = (candidates) => {
-    setSelectedSenator(candidates);
     setFormData({ ...formData, senator_id: candidates });
   };
 
   const handleCapture = (img) => {
-    setFormData({ ...formData, file: img });
+    setFormData({ ...formData, img_data: img });
   };
 
-  const handleState = () => {
-    console.log(formData);
+  const handleSubmit = async () => {
+    try {
+      const result = await API.post("/vote", formData);
+    } catch (error) {
+      console.log(`vote error: ${error.message}`);
+    }
   };
 
   if (typeof window !== undefined) {
-    if (isVoted !== "0") {
+    if (isVoted !== "0" && isVoted !== undefined) {
       return <DoneVote />;
     }
   }
@@ -71,8 +77,7 @@ const Vote = () => {
         <>
           <Navbar />
           <Background minH="100vh">
-            <StepTwo onCapture={handleCapture} />
-            <Button height="50vh" onClick={handleState}>State</Button>
+            <StepTwo onCapture={handleCapture} onSubmit={handleSubmit} />
           </Background>
         </>
       );

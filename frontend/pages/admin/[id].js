@@ -1,23 +1,37 @@
-import {
-  Flex,
-  Heading,
-  Text,
-  Image,
-  HStack,
-  Button,
-  Alert,
-  AlertIcon,
-} from "@chakra-ui/react";
-import {
-  CheckIcon,
-  CloseIcon,
-  DeleteIcon,
-} from "@chakra-ui/icons";
+import { Flex, Heading, Text, Image, HStack, Button, Alert, AlertIcon } from "@chakra-ui/react";
+import { CheckIcon, CloseIcon, DeleteIcon } from "@chakra-ui/icons";
 import moment from "moment";
+import { useRouter } from "next/router";
 
 import Background from "../../components/Background/Background";
+import { useEffect, useState } from "react";
+import { useAuthState } from "../../contexts/auth";
 
-const User = ({ nim }) => {
+const User = () => {
+  const router = useRouter();
+  const { id } = router.query;
+  const { loading } = useAuthState();
+
+  const [userData, setUserData] = useState({ nim: null, nama: null, isVoted: null, image: null });
+
+  useEffect(() => {
+    if (!router.isReady) return;
+
+    const fetchData = async () => {
+      try {
+        if (id) {
+          console.log(`id: ${id}`);
+          const res = await fetch(`http://localhost:3000/${id}.json`);
+          const data = await JSON.parse(res);
+          setUserData(data);
+        }
+      } catch (error) {
+        console.log(error.message);
+      }
+    };
+    fetchData();
+  }, [router.isReady, id]);
+
   return (
     <Background>
       <Flex width="100vw" minH="100vh" justifyContent="center" alignItems="center">
@@ -32,10 +46,10 @@ const User = ({ nim }) => {
         >
           <Flex flexDir="column" textAlign="center" mb={4} p={4} pt={0}>
             <Heading p={8} pb={0}>
-              {nim.nim}
+              {userData.nim}
             </Heading>
             <Text fontWeight="semibold" fontSize={24}>
-              {nim.nama}
+              {userData.nama}
             </Text>
           </Flex>
           <Flex
@@ -46,15 +60,15 @@ const User = ({ nim }) => {
             borderColor="#cccccc"
             borderWidth={1}
           >
-            <Image src={nim.image} htmlWidth="500px" />
+            <Image src={userData.image} htmlWidth="500px" />
           </Flex>
-          {nim.isVoted === 0 ? null : (
+          {userData.isVoted === 0 ? null : (
             <Flex pl={8} pr={8}>
               <Alert status="success">
                 <AlertIcon />
                 <Flex flexDir="column" textAlign="center">
-                  <Text>Peserta ini telah diverifikasi dengan status: {nim.isVoted}</Text>
-                  <Text>{moment().format('MMMM Do YYYY, h:mm:ss a')} </Text>
+                  <Text>Peserta ini telah diverifikasi dengan status: {userData.isVoted}</Text>
+                  <Text>{moment().format("MMMM Do YYYY, h:mm:ss a")} </Text>
                 </Flex>
               </Alert>
             </Flex>
@@ -78,28 +92,5 @@ const User = ({ nim }) => {
     </Background>
   );
 };
-
-export async function getStaticProps({ params }) {
-  const res = await fetch(`http://localhost:3000/${params.id}.json`);
-  const data = await res.json();
-
-  return {
-    props: { nim: data },
-  };
-}
-
-export async function getStaticPaths() {
-  const res = await fetch(`http://localhost:3000/nim.json`);
-  const data = await res.json();
-
-  const paths = data.map((nim) => {
-    return { params: { id: nim } };
-  });
-
-  return {
-    paths,
-    fallback: false,
-  };
-}
 
 export default User;

@@ -35,6 +35,7 @@ const Dashboard = () => {
 
   const handleClick = () => {
     router.push('/vote');
+    localStorage.setItem("initialTime", Date.now());
   }
 
   return (

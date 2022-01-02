@@ -18,7 +18,7 @@ const Preview = ({ src }) => {
   );
 };
 
-const Photo = ({ onCapture }) => {
+const Photo = ({ onCapture, onSubmit }) => {
   const videoRef = useRef(null);
   const [photo, setPhoto] = useState({ captured: false, src: "" });
   const [videoConstraints, setVideoConstraints] = useState(initialConstraints);
@@ -111,6 +111,11 @@ const Photo = ({ onCapture }) => {
             </Flex>
           )}
           <Button onClick={handleCapture}>{photo.captured ? "Capture Ulang" : "Capture"}</Button>
+          <Flex mt={16}>
+            <Button bg="#FF7315" color="white" _hover={{ bg: "#E25B00" }} onClick={onSubmit}>
+              Submit
+            </Button>
+          </Flex>
         </VStack>
       </Flex>
     </Flex>
