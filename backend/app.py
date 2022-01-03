@@ -92,6 +92,7 @@ def vote():
       "bph_id" : bph_id,
       "senator_id" : senator_id,
       "timestamp" : datetime.now().strftime("%d-%b-%Y (%H:%M:%S)"),
+      "review_timestamp" : datetime.now(),
       "img_url" : photo.metadata['alternateLink'].replace("https://drive.google.com/file/d/", "https://drive.google.com/uc?export=view&id=").replace("/view?usp=drivesdk", ""),
       "timeTaken" : timeTaken,
       "status" : 0
@@ -125,7 +126,10 @@ def reviewVote():
       db["votes"].find_one_and_update(
         {"username" : username},
         {
-          "$set" : {"status" : 2} # Vote ditandai valid
+          "$set" : {
+            "status" : 2,
+            "review_timestamp" : datetime.now().strftime("%d-%b-%Y (%H:%M:%S)")
+          } # Vote ditandai valid
         }
       )
       return {}, 201
@@ -139,7 +143,10 @@ def reviewVote():
       db["votes"].find_one_and_update(
         {"username" : username},
         {
-          "$set" : {"status" : 1} # Vote ditandai tidak valid
+          "$set" : {
+            "status" : 1,
+            "review_timestamp" : datetime.now().strftime("%d-%b-%Y (%H:%M:%S)")
+          } # Vote ditandai tidak valid
         }
       )
       return {}, 201
@@ -153,7 +160,10 @@ def reviewVote():
       db["votes"].find_one_and_update(
         {"username" : username},
         {
-          "$set" : {"status" : 1} # Vote ditandai tidak valid
+          "$set" : {
+            "status" : 1,
+            "review_timestamp" : datetime.now().strftime("%d-%b-%Y (%H:%M:%S)")
+          } # Vote ditandai tidak valid
         }
       )
       return {}, 201
