@@ -56,7 +56,7 @@ const Count = ({ mode }) => {
           setCounting(true);
         }
       });
-    }, 2000);
+    }, 5000);
 
     dispatch({ type: actions.STOP_LOADING });
     return () => {
@@ -107,7 +107,7 @@ const Count = ({ mode }) => {
         >
           <Heading my={4}>Perhitungan Suara {mode}</Heading>
           {mode === "Senator" ? (
-            <Link href={"/count_bph"}>
+            <Link href={"/count-bph"}>
               <Text textAlign="left" mx={5}>
                 {"<<< Ketua BPH"}
               </Text>

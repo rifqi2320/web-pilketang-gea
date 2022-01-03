@@ -14,7 +14,7 @@ const StepZero = ({ timeLeft, onNext, changeStep }) => {
       const res = await fetch("https://pemilu-gea-2022.vercel.app/data_paslon.json");
       const data = await res.json();
       setAllCandidates(data.bph);
-      setSelectedCandidates(new Array(allCandidates.length).fill(-1));
+      setSelectedCandidates(new Array(2).fill(-1));
     } catch (error) {
       Router.push("/server-error");
     }
