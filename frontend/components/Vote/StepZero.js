@@ -11,7 +11,7 @@ const StepZero = ({ timeLeft, onNext, changeStep }) => {
 
   const fetchData = async () => {
     try {
-      const res = await fetch("http://localhost:3000/data_paslon.json");
+      const res = await fetch("https://pemilu-gea-2022.vercel.app/data_paslon.json");
       const data = await res.json();
       setAllCandidates(data.bph);
       setSelectedCandidates(new Array(allCandidates.length).fill(-1));
