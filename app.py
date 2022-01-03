@@ -1,3 +1,4 @@
+import os
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required, JWTManager
@@ -374,4 +375,4 @@ def get_count():
   
 
 if __name__ == "__main__":
-  app.run()
+  app.run(port=80)
