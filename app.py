@@ -14,7 +14,7 @@ from base64 import b64decode
 # GDrive Stuff
 gauth = GoogleAuth()
 scope = ["https://www.googleapis.com/auth/drive"]
-gauth.credentials = ServiceAccountCredentials.from_json_keyfile_name('venv/credentials.json', scope)
+gauth.credentials = ServiceAccountCredentials.from_json_keyfile_name('credentials.json', scope)
 drive = GoogleDrive(gauth)
 
 # MongoDB Stuff
