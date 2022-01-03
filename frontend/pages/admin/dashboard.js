@@ -1,10 +1,21 @@
 import { Flex, Heading, Text, Button, VStack } from "@chakra-ui/react";
 
+import { useEffect, useState } from "react";
+
 import Background from "../../components/Background/Background.js";
 import { logout, useAuthDispatch } from "../../contexts/auth.js";
+import { getVoteStat } from "../../contexts/data.js";
 
 const Admin = () => {
+  const [dataStatus, setDataStatus] = useState({});
   const dispatch = useAuthDispatch();
+
+  useEffect(() => {
+    getVoteStat().then((res) => {
+      console.log(res);
+      setDataStatus(res);
+    });
+  }, []);
 
   const handleLogout = () => {
     logout(dispatch);
@@ -21,8 +32,8 @@ const Admin = () => {
           </Flex>
           <VStack p={8} pt={0} spacing={8}>
             <Flex justifyContent="center" textAlign="center" flexDir="column">
-              <Text fontSize="xl">20 Peserta Terverifikasi</Text>
-              <Text fontSize="xl">100 Peserta Belum Terverifikasi</Text>
+              <Text fontSize="xl">{dataStatus["Validated"]} Peserta Terverifikasi</Text>
+              <Text fontSize="xl">{dataStatus["In Progress"]} Peserta Belum Terverifikasi</Text>
             </Flex>
             <Flex flexDir="column">
               <Button colorScheme="teal" as="a" href="search" variant="outline">
