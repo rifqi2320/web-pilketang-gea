@@ -1,7 +1,7 @@
 import { Flex, Heading, Text, Button, VStack } from "@chakra-ui/react";
 
 import { useEffect, useState } from "react";
-
+import { useRouter } from "next/router";
 import Background from "../../components/Background/Background.js";
 import { logout, useAuthDispatch } from "../../contexts/auth.js";
 import { getVoteStat } from "../../contexts/data.js";
@@ -12,9 +12,26 @@ const Admin = () => {
   const [dataStatus, setDataStatus] = useState({});
   const [readyCount, setReadyCount] = useState(false);
   const [isCounting, setIsCounting] = useState(false);
+  const [isVoting, setIsVoting] = useState(false);
   const dispatch = useAuthDispatch();
+  const router = useRouter();
 
   const token = localStorage.getItem("token");
+  const vote_enabled = localStorage.getItem("vote_enabled");
+
+  const toggleVoting = () => {
+    axios
+      .put(
+        "http://localhost:5000/toggle_voting",
+        {},
+        {
+          headers: { Authorization: "Bearer " + token },
+        }
+      )
+      .then(() => {
+        setIsVoting(!isVoting);
+      });
+  };
 
   const toggleCounting = () => {
     if (isCounting) {
@@ -45,6 +62,12 @@ const Admin = () => {
   };
 
   useEffect(() => {
+    if (vote_enabled == "true") {
+      setIsVoting(true);
+    } else {
+      setIsVoting(false);
+    }
+
     getVoteStat().then((res) => {
       setDataStatus(res);
       if (res["In Progress"] === 0) {
@@ -79,7 +102,9 @@ const Admin = () => {
           </Flex>
           <VStack p={8} pt={0} spacing={8}>
             <Flex justifyContent="center" textAlign="center" flexDir="column">
-              <Text fontSize="xl">{dataStatus["Validated"]} Peserta Terverifikasi</Text>
+              <Text fontSize="xl">
+                {dataStatus["Validated"] + dataStatus["Rejected"]} Peserta Terverifikasi
+              </Text>
               <Text fontSize="xl">{dataStatus["In Progress"]} Peserta Belum Terverifikasi</Text>
             </Flex>
             <Flex flexDir="column">
@@ -105,6 +130,27 @@ const Admin = () => {
                   mt={4}
                 >
                   Start Counting
+                </Button>
+              )}
+              {isVoting ? (
+                <Button
+                  colorScheme="yellow"
+                  onClick={toggleVoting}
+                  isDisabled={!readyCount}
+                  variant="outline"
+                  mt={4}
+                >
+                  Stop Voting
+                </Button>
+              ) : (
+                <Button
+                  colorScheme="yellow"
+                  onClick={toggleVoting}
+                  isDisabled={!readyCount}
+                  variant="outline"
+                  mt={4}
+                >
+                  Start Voting
                 </Button>
               )}
               <Button

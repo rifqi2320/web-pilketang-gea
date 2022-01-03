@@ -240,7 +240,7 @@ def toggle_voting():
   identity = get_jwt_identity()
   if identity != "admin":
     return {}, 401
-  isVoting != isVoting
+  isVoting = not isVoting
   return {}, 201
 
 @app.route("/get_paslon")
@@ -375,4 +375,4 @@ def get_count():
   
 
 if __name__ == "__main__":
-  app.run()
+  app.run(debug=True)
