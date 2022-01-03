@@ -9,7 +9,6 @@ const login = () => {
   return (
     <div>
       <Container bg="#f4f4f4" minW="100vw" minH="100vh" centerContent>
-        <Check />
         <Login />
       </Container>
     </div>

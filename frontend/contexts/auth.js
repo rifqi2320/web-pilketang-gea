@@ -79,10 +79,12 @@ const reducer = (state, action) => {
       };
     case actions.LOGOUT:
       return {
-        ...state,
-        authenticated: false,
-        token: null,
         user: null,
+        token: null,
+        isVoted: null,
+        type: null,
+        loading: false,
+        authenticated: false,
       };
     case actions.STOP_LOADING:
       return {

@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
 
-import { useAuthDispatch, useAuthState, actions } from "../../contexts/auth.js";
+import { useAuthDispatch, useAuthState, actions, logout } from "../../contexts/auth.js";
 import FullPageLoader from "../FullPageLoader/FullPageLoader.js";
 
 const PrivateRoute = ({ protectedRoutes, children }) => {
@@ -17,6 +17,11 @@ const PrivateRoute = ({ protectedRoutes, children }) => {
   const session = async () => {
     try {
       const token = localStorage.getItem("token");
+      if (!token) {
+        logout(dispatch);
+        return router.push("/login");
+      }
+
       const result = await axios.get("http://localhost:5000/user_data", {
         headers: { Authorization: "Bearer " + token },
       });
@@ -30,7 +35,7 @@ const PrivateRoute = ({ protectedRoutes, children }) => {
         payload: {
           data: {
             username: result.data.username,
-            password: result.data.password,
+            password: token,
             type: result.data.type,
             isVoted: result.data.isVoted,
           },
@@ -38,15 +43,17 @@ const PrivateRoute = ({ protectedRoutes, children }) => {
       });
       return result;
     } catch (error) {
-      console.log(`Session error: ${error.message}`);
-      dispatch({
-        type: actions.LOGIN_ERROR,
-      });
+      if (error.response?.status === 422) {
+        console.log(`Session error: ${error.message}`);
+        logout();
+      }
     }
   };
 
   useEffect(() => {
-    session();
+    if (!(router.pathname === "/login")) {
+      session();
+    }
   }, [router.pathname]);
 
   useEffect(() => {
