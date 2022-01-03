@@ -70,7 +70,7 @@ const User = () => {
   const [voteData, setVoteData] = useState({});
 
   const API = axios.create({
-    baseURL: "https://backend-piketang-gea.azurewebsites.net/",
+    baseURL: "https://backend-pilketang-gea.azurewebsites.net/",
     headers: {
       Authorization: "Bearer " + token,
     },

@@ -43,7 +43,7 @@ const Search = () => {
 
   useEffect(() => {
     axios
-      .get("https://backend-piketang-gea.azurewebsites.net/get_users", {
+      .get("https://backend-pilketang-gea.azurewebsites.net/get_users", {
         headers: { Authorization: "Bearer " + token },
       })
       .then((res) => {

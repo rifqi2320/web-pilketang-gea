@@ -37,7 +37,7 @@ const Admin = () => {
     if (isCounting) {
       axios
         .post(
-          "https://backend-piketang-gea.azurewebsites.net/stop_count",
+          "https://backend-pilketang-gea.azurewebsites.net/stop_count",
           {},
           {
             headers: { Authorization: "Bearer " + token },
@@ -49,7 +49,7 @@ const Admin = () => {
     } else {
       axios
         .post(
-          "https://backend-piketang-gea.azurewebsites.net/start_count",
+          "https://backend-pilketang-gea.azurewebsites.net/start_count",
           {},
           {
             headers: { Authorization: "Bearer " + token },

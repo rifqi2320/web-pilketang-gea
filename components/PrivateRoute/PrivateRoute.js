@@ -22,7 +22,7 @@ const PrivateRoute = ({ protectedRoutes, children }) => {
         return router.push("/login");
       }
 
-      const result = await axios.get("https://backend-piketang-gea.azurewebsites.net/user_data", {
+      const result = await axios.get("https://backend-pilketang-gea.azurewebsites.net/user_data", {
         headers: { Authorization: "Bearer " + token },
       });
       if (result) {
