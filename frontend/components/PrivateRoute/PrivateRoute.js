@@ -29,6 +29,7 @@ const PrivateRoute = ({ protectedRoutes, children }) => {
         localStorage.setItem("user", result.data.username);
         localStorage.setItem("type", result.data.type);
         localStorage.setItem("isVoted", result.data.isVoted);
+        localStorage.setItem("vote_enabled", result.data.vote_enabled);
       }
       dispatch({
         type: actions.LOGIN_SUCCESS,

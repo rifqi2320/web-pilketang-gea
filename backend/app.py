@@ -30,7 +30,7 @@ app.config["JWT_ACCESS_TOKEN_EXPIRES"] = False
 jwt = JWTManager(app)
 
 #State Backend
-isVoting = False
+isVoting = True
 
 @app.route("/login", methods=['POST'])
 def login():
@@ -62,6 +62,7 @@ def get_user_data():
     res = user
     res.pop("_id", None)
     res.pop("password", None)
+    res["vote_enabled"] = isVoting
     return res, 200
   else:
     return {}, 400
@@ -239,7 +240,7 @@ def toggle_voting():
   identity = get_jwt_identity()
   if identity != "admin":
     return {}, 401
-  isVoting != isVoting
+  isVoting = not isVoting
   return {}, 201
 
 @app.route("/get_paslon")
@@ -374,4 +375,4 @@ def get_count():
   
 
 if __name__ == "__main__":
-  app.run()
+  app.run(debug=True)
