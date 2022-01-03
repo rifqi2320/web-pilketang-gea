@@ -1,9 +1,10 @@
 import { Flex, Heading, Input, VStack, Button } from "@chakra-ui/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Router from "next/router";
+import axios from "axios";
 
 import Background from "../../components/Background/Background";
-import nimList from "../../public/nim.json";
+import { useAuthState } from "../../contexts/auth";
 
 const UserList = ({ children, isVoted }) => {
   let color;
@@ -22,7 +23,6 @@ const UserList = ({ children, isVoted }) => {
   return (
     <Button
       colorScheme="gray"
-      isExternal
       as="a"
       href={children}
       w="full"
@@ -37,6 +37,21 @@ const UserList = ({ children, isVoted }) => {
 
 const Search = () => {
   const [search, setSearch] = useState("");
+  const [userList, setUserList] = useState([]);
+
+  const token = localStorage.getItem("token");
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:5000/get_users", {
+        headers: { Authorization: "Bearer " + token },
+      })
+      .then((res) => {
+        res.data.data.shift();
+        setUserList(res.data.data);
+      })
+      .catch((err) => console.log(err));
+  }, [token]);
 
   const handleChange = (e) => {
     setSearch(e.target.value);
@@ -65,17 +80,17 @@ const Search = () => {
           </Flex>
           <Flex p={8} pt={2}>
             <VStack w="full" spacing={1}>
-              {nimList
-                .filter((nim) => {
-                  if (search === "") {
-                    return nim;
-                  } else if (nim.includes(search)) {
-                    return nim;
-                  }
-                })
-                .map((nim) => (
-                  <UserList>{nim}</UserList>
-                ))}
+              {userList[0]
+                ? userList
+                    .filter((user) => {
+                      if (search === "") {
+                        return user;
+                      } else if (user.username.includes(search)) {
+                        return user;
+                      }
+                    })
+                    .map((user, index) => <UserList key={index}>{user.username}</UserList>)
+                : ""}
             </VStack>
           </Flex>
         </Flex>

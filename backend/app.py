@@ -70,7 +70,6 @@ def vote():
   user = db["users"].find_one({"username" : username})
   if user:
     if user["isVoted"] == 1 or user["isVoted"] == 3:
-      print(user)
       return {}, 401
     
     bph_id = request.json.get('bph_id')
@@ -163,19 +162,39 @@ def reviewVote():
   else:
     return {}, 400
 
-@app.route("/get_vote")
+@app.route("/get_user", methods=["POST"])
+@jwt_required()
+def get_user():
+  identity = get_jwt_identity()
+  if identity != "admin":
+    return {}, 401
+  nim = request.json.get("nim")
+  user = db["users"].find_one({"username" : nim})
+  if user:
+    res = {
+      "timestamp" : datetime.now().strftime("%d-%b-%Y (%H:%M:%S)"),
+      "data" : user
+    }
+    res["data"].pop("_id", None)
+    res["data"].pop("password", None)
+    return res, 200
+  else:
+    return {}, 204
+
+@app.route("/get_vote", methods=["POST"])
 @jwt_required()
 def get_queue_votes():
   identity = get_jwt_identity()
   if identity != "admin":
     return {}, 401
   nim = request.json.get("nim")
-  votes = db["votes"].find_one({"nim" : nim})
+  votes = db["votes"].find_one({"username" : nim})
   if votes:
     res = {
       "timestamp" : datetime.now().strftime("%d-%b-%Y (%H:%M:%S)"),
       "data" : votes
     }
+    res["data"].pop("_id", None)
     return res, 200
   else:
     return {}, 204
@@ -185,7 +204,7 @@ def get_queue_votes():
 def get_users():
   identity = get_jwt_identity()
   if identity != "admin":
-    return {}, 404
+    return {}, 401
   users = db["users"].find({})
   if users:
     res = {
