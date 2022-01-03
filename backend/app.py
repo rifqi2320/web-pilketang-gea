@@ -29,6 +29,9 @@ app.config["JWT_SECRET_KEY"] = "pilketang-gea"
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = False
 jwt = JWTManager(app)
 
+#State Backend
+isVoting = False
+
 @app.route("/login", methods=['POST'])
 def login():
   username = request.json.get('username')
@@ -66,6 +69,8 @@ def get_user_data():
 @app.route("/vote", methods=['POST'])
 @jwt_required()
 def vote():
+  if not isVoting:
+    return {}, 401
   username = get_jwt_identity()
   user = db["users"].find_one({"username" : username})
   if user:
@@ -227,6 +232,16 @@ def get_users():
   else:
     return {}, 204
 
+@app.route("/toggle_voting", methods=["PUT"])
+@jwt_required()
+def toggle_voting():
+  global isVoting
+  identity = get_jwt_identity()
+  if identity != "admin":
+    return {}, 401
+  isVoting != isVoting
+  return {}, 201
+
 @app.route("/get_paslon")
 def get_paslon():
   paslon = db["paslon"].find({})
@@ -248,7 +263,7 @@ def get_status_votes():
     "Not Voted" : db["users"].count_documents({}) - 1,
     "Voted" : 0,
     "In Progress" : 0,
-    "Validated" : -1,
+    "Validated" : 0,
     "Rejected" : 0,
   }
 
@@ -359,4 +374,4 @@ def get_count():
   
 
 if __name__ == "__main__":
-  app.run(debug=True)
+  app.run()

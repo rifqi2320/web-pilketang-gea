@@ -1,6 +1,5 @@
 import { Flex, Link, Heading, Input, VStack, Button } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
-import Router from "next/router";
 import axios from "axios";
 
 import Background from "../../components/Background/Background";
