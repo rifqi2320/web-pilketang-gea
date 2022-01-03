@@ -19,13 +19,13 @@ import { actions, useAuthDispatch, useAuthState } from "../../contexts/auth";
 
 const Dashboard = () => {
   const [voteData, setVoteData] = useState(null);
-  const [isVoted, setIsVoted] = useState(null);
   const router = useRouter();
   const dispatch = useAuthDispatch();
 
+  const isVoted = localStorage.getItem("isVoted");
+
   useEffect(() => {
     dispatch({ type: actions.STOP_LOADING });
-    setIsVoted(localStorage.getItem("isVoted"));
     getVoteStat()
       .then((res) => {
         setVoteData(res);
@@ -94,9 +94,9 @@ const Dashboard = () => {
                   </ListItem>
                 </UnorderedList>
                 <Text my={4}>
-                  Status Suara Anda : <b>{true ? "Belum Ada" : "Sudah Ada"}</b>
+                  Status Suara Anda : <b>{isVoted == 0 ? "Belum Ada" : "Sudah Ada"}</b>
                 </Text>
-                {true ? (
+                {isVoted == 0 ? (
                   <Button
                     size="sm"
                     colorScheme="whiteAlpha"

@@ -5,16 +5,63 @@ import { useEffect, useState } from "react";
 import Background from "../../components/Background/Background.js";
 import { logout, useAuthDispatch } from "../../contexts/auth.js";
 import { getVoteStat } from "../../contexts/data.js";
+import { getCount } from "../../contexts/count.js";
+import axios from "axios";
 
 const Admin = () => {
   const [dataStatus, setDataStatus] = useState({});
+  const [readyCount, setReadyCount] = useState(false);
+  const [isCounting, setIsCounting] = useState(false);
   const dispatch = useAuthDispatch();
+
+  const token = localStorage.getItem("token");
+
+  const toggleCounting = () => {
+    if (isCounting) {
+      axios
+        .post(
+          "http://localhost:5000/stop_count",
+          {},
+          {
+            headers: { Authorization: "Bearer " + token },
+          }
+        )
+        .then((res) => {
+          setIsCounting(false);
+        });
+    } else {
+      axios
+        .post(
+          "http://localhost:5000/start_count",
+          {},
+          {
+            headers: { Authorization: "Bearer " + token },
+          }
+        )
+        .then((res) => {
+          setIsCounting(true);
+        });
+    }
+  };
 
   useEffect(() => {
     getVoteStat().then((res) => {
-      console.log(res);
       setDataStatus(res);
+      if (res["In Progress"] === 0) {
+        setReadyCount(true);
+      } else {
+        setReadyCount(false);
+      }
     });
+    getCount().then((res) => {
+      if (res.senator) {
+        setIsCounting(true);
+      } else {
+        setIsCounting(false);
+      }
+    });
+    console.log(isCounting);
+    console.log(readyCount);
   }, []);
 
   const handleLogout = () => {
@@ -39,6 +86,27 @@ const Admin = () => {
               <Button colorScheme="teal" as="a" href="search" variant="outline">
                 Verifikasi Peserta
               </Button>
+              {isCounting ? (
+                <Button
+                  colorScheme="yellow"
+                  onClick={toggleCounting}
+                  isDisabled={!readyCount}
+                  variant="outline"
+                  mt={4}
+                >
+                  Stop Counting
+                </Button>
+              ) : (
+                <Button
+                  colorScheme="yellow"
+                  onClick={toggleCounting}
+                  isDisabled={!readyCount}
+                  variant="outline"
+                  mt={4}
+                >
+                  Start Counting
+                </Button>
+              )}
               <Button
                 colorScheme="red"
                 onClick={handleLogout}

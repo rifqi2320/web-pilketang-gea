@@ -1,21 +1,21 @@
-import { Flex, Heading, Input, VStack, Button } from "@chakra-ui/react";
+import { Flex, Link, Heading, Input, VStack, Button } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
-import Router from "next/router";
 import axios from "axios";
 
 import Background from "../../components/Background/Background";
-import { useAuthState } from "../../contexts/auth";
 
 const UserList = ({ children, isVoted }) => {
   let color;
   if (isVoted === 0) {
-    color = "gray";
-  } else if (isVoted === 1) {
+    color = "#C0C0C0";
+  } else if (isVoted === 3) {
     color = "red";
   } else if (isVoted === 2) {
+    color = "yellow";
+  } else if (isVoted === 1) {
     color = "orange";
-  } else if (isVoted === 3) {
-    color = "green";
+  } else if (isVoted === 4) {
+    color = "#00FF7F";
   } else {
     color = "black";
   }
@@ -26,7 +26,7 @@ const UserList = ({ children, isVoted }) => {
       as="a"
       href={children}
       w="full"
-      color={color}
+      bg={color}
       textAlign="center"
       variant="outline"
     >
@@ -70,6 +70,9 @@ const Search = () => {
           mt={16}
           mb={16}
         >
+          <Link pt={4} pl={4} href={"/admin/dashboard"}>
+            {"<<< Kembali"}
+          </Link>
           <Flex>
             <Heading p={8} pb={4} width="full" textAlign="center">
               Cari Peserta
@@ -89,7 +92,11 @@ const Search = () => {
                         return user;
                       }
                     })
-                    .map((user, index) => <UserList key={index}>{user.username}</UserList>)
+                    .map((user, index) => (
+                      <UserList key={index} isVoted={user.isVoted}>
+                        {user.username}
+                      </UserList>
+                    ))
                 : ""}
             </VStack>
           </Flex>
