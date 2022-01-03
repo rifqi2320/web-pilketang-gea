@@ -48,7 +48,7 @@ const SelectCandidate = ({ allCandidatesList, selectedCandidates, func, num }) =
   );
 };
 
-const StepOne = ({ onNext, changeStep }) => {
+const StepOne = ({ timeLeft, onNext, changeStep }) => {
   const allCandidates = candidateList;
 
   const [selectedCandidates, setSelectedCandidates] = useState(
@@ -89,7 +89,8 @@ const StepOne = ({ onNext, changeStep }) => {
                 Vote Senator
               </Heading>
             </Flex>
-            <Flex>
+            <Flex flexDir="column">
+              {timeLeft}
               <Stack width="full" alignContent="center" mt={4}>
                 {allCandidates.map((_, id) => (
                   <SelectCandidate
@@ -103,7 +104,7 @@ const StepOne = ({ onNext, changeStep }) => {
               </Stack>
             </Flex>
             <Flex width="full" justifyContent="center" flexDir="column" alignItems="center">
-              {selectedCandidates[0] === "" ? null : (
+              {selectedCandidates[0] === -1 ? null : (
                 <Text color="red" textAlign="center">
                   Periksa kembali pilihan Anda sebelum klik next
                 </Text>

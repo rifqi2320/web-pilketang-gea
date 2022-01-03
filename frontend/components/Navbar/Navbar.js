@@ -18,7 +18,7 @@ import { HamburgerIcon } from "@chakra-ui/icons";
 import Router from "next/router";
 
 import Logo from "../Logo";
-import { logout, useAuthDispatch } from "../../contexts/auth";
+import { logout, useAuthDispatch, useAuthState } from "../../contexts/auth";
 
 const handleRedirect = (dest) => {
   Router.push(dest);
@@ -78,6 +78,7 @@ const MobileMenuItem = ({ children, to, onClick }) => {
 const Navbar = ({ children, ...props }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
+  const { user } = useAuthState();
   const dispatch = useAuthDispatch();
 
   const handleLogout = () => {
@@ -122,7 +123,7 @@ const Navbar = ({ children, ...props }) => {
           height="100%"
           display={["none", "none", "flex", "flex"]}
         >
-          <Text>12020000 - John Doe</Text>
+          <Text>{user}</Text>
           <Button
             size="sm"
             colorScheme="gray"
@@ -147,7 +148,7 @@ const Navbar = ({ children, ...props }) => {
           <DrawerOverlay />
           <DrawerContent bg="#FF7315" textColor="white">
             <DrawerCloseButton />
-            <DrawerHeader>12020000 - John Doe</DrawerHeader>
+            <DrawerHeader bg="#F58539" textAlign="center">{user}</DrawerHeader>
             <DrawerBody>
               <MobileMenuItem to="/dashboard">Dashboard</MobileMenuItem>
               <MobileMenuItem to="/count-bph">Live Count</MobileMenuItem>
@@ -155,6 +156,8 @@ const Navbar = ({ children, ...props }) => {
                 Logout
               </MobileMenuItem>
             </DrawerBody>
+            <Spacer />
+            <Text p={4} textAlign="center" fontWeight="semibold">Pemilu HMTG "GEA" 2022</Text>
           </DrawerContent>
         </Drawer>
       </Flex>

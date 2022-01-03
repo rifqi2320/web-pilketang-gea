@@ -1,4 +1,4 @@
-import { Flex, Box, Button, Heading, VStack, Text, Image } from "@chakra-ui/react";
+import { Flex, Box, Button, Heading, VStack, Text, Image, Spinner } from "@chakra-ui/react";
 import { RepeatIcon } from "@chakra-ui/icons";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Webcam from "react-webcam";
@@ -9,7 +9,7 @@ const initialConstraints = {
 
 const Preview = ({ src }) => {
   return (
-    <Flex justifyContent="center" pt={16} alignItems="center" flexDir="column">
+    <Flex justifyContent="center" alignItems="center" flexDir="column">
       <Heading width="full" textAlign="center">
         Preview
       </Heading>
@@ -18,15 +18,15 @@ const Preview = ({ src }) => {
   );
 };
 
-const Photo = ({ onCapture, onSubmit }) => {
+const Photo = ({ timeLeft, onCapture, onSubmit }) => {
   const videoRef = useRef(null);
   const [photo, setPhoto] = useState({ captured: false, src: "" });
   const [videoConstraints, setVideoConstraints] = useState(initialConstraints);
+  const [loading, setLoading] = useState(false);
   const [devices, setDevices] = useState({
     devicesList: [],
     selected: 0,
   });
-  const [timeLeft, setTimeLeft] = useState(720);
 
   const loadVideoDevices = () => {
     navigator.mediaDevices.enumerateDevices().then((devices) => {
@@ -37,11 +37,6 @@ const Photo = ({ onCapture, onSubmit }) => {
   };
 
   useEffect(loadVideoDevices, []);
-
-  useEffect(() => {
-    const timer = timeLeft > 0 && setInterval(() => setTimeLeft(timeLeft - 1), 1000);
-    return () => clearInterval(timer);
-  }, [timeLeft]);
 
   const handleChange = () => {
     let currentIndex = devices.selected;
@@ -66,6 +61,11 @@ const Photo = ({ onCapture, onSubmit }) => {
     onCapture(imageSrc);
   }, [videoRef]);
 
+  const handleSubmit = () => {
+    onSubmit();
+    setLoading(true);
+  }
+
   return (
     <Flex w="100vw" minH="100vh" justifyContent="center">
       <Flex
@@ -89,33 +89,52 @@ const Photo = ({ onCapture, onSubmit }) => {
           p={8}
         >
           <Heading w="full">Validasi Voting</Heading>
-          <Text mt={2}>Validasi hasil vote Anda dengan bukti foto</Text>
+          <Text mt={2}>Validasi hasil vote Anda dengan bukti foto.</Text>
+          {timeLeft}
         </Flex>
         <VStack mb={4}>
-          <Box pb={4} pt={4}>
-            <Button onClick={handleChange}>
-              <Text mr={4}>Ganti Kamera</Text>
-              <RepeatIcon />
-            </Button>
-          </Box>
+          {photo.captured ? null : (
+            <Box pb={4} pt={4}>
+              <Button onClick={handleChange}>
+                <Text mr={4}>Ganti Kamera</Text>
+                <RepeatIcon />
+              </Button>
+            </Box>
+          )}
           {photo.captured ? (
             <Preview src={photo.src} />
           ) : (
-            <Flex mt={12} boxShadow="md">
-              <Webcam
-                forceScreenshotSourceSize
-                ref={videoRef}
-                screenshotFormat="image/jpeg"
-                videoConstraints={videoConstraints}
-              />
-            </Flex>
+            <>
+              <Flex mt={12} boxShadow="md">
+                <Webcam
+                  forceScreenshotSourceSize
+                  ref={videoRef}
+                  screenshotFormat="image/jpeg"
+                  videoConstraints={videoConstraints}
+                />
+              </Flex>
+            </>
           )}
           <Button onClick={handleCapture}>{photo.captured ? "Capture Ulang" : "Capture"}</Button>
-          <Flex mt={16}>
-            <Button bg="#FF7315" color="white" _hover={{ bg: "#E25B00" }} onClick={onSubmit}>
-              Submit
-            </Button>
-          </Flex>
+          {!photo.captured ? null : (
+            <Flex pt={16} flexDir="column" maxW="400px" alignItems="center">
+              <Text color="red" textAlign="center">
+                Periksa kembali bukti foto Anda sebelum melakukan submit
+              </Text>
+              <Button
+                mt={2}
+                bg="#FF7315"
+                minW="150px"
+                maxW="250px"
+                color="white"
+                _hover={{ bg: "#E25B00" }}
+                onClick={handleSubmit}
+                disabled={loading}
+              >
+                {!loading? "Submit" : <Spinner />}
+              </Button>
+            </Flex>
+          )}
         </VStack>
       </Flex>
     </Flex>

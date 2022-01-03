@@ -1,8 +1,5 @@
 import Login from "../components/Login/Login";
 import { Container } from "@chakra-ui/layout";
-import Check from "../components/Check";
-// import { useRouter } from "next/router";
-// import { useAuthState, useAuthDispatch, actions } from "../contexts/auth";
 
 const login = () => {
 
