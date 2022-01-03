@@ -1,59 +1,30 @@
-import { Stack, Flex, Heading, Text, Select, Button, HStack } from "@chakra-ui/react";
-
-import candidateList from "../../calon.json";
+import { Stack, Flex, Heading, Text, Button } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 
-const SelectCandidate = ({ allCandidatesList, selectedCandidates, func, num }) => {
-  const [notSelected, setNotSelected] = useState([]);
+import SelectCandidate from "./SelectCandidate";
+import PaslonList from "./PaslonList";
+import { Router } from "next/router";
 
-  useEffect(() => {
-    const newArray = allCandidatesList.filter(
-      (x) => !selectedCandidates.slice(0, num).includes(parse(x.id))
-    );
-    setNotSelected([...newArray]);
-  }, [selectedCandidates]);
+const StepZero = ({ timeLeft, onNext, changeStep }) => {
+  // const allCandidates = candidateList.bph;
+  const [allCandidates, setAllCandidates] = useState([]);
 
-  const handleChange = (e) => {
-    func(parse(e.target.value), num);
-  };
-
-  const parse = (num) => {
-    if (num === "") {
-      return -1;
-    } else {
-      return parseInt(num);
+  const fetchData = async () => {
+    try {
+      const res = await fetch("http://localhost:3000/data_paslon.json");
+      const data = await res.json();
+      setAllCandidates(data.senator);
+      setSelectedCandidates(new Array(allCandidates.length).fill(-1));
+    } catch (error) {
+      Router.push("/server-error");
     }
   };
 
-  return (
-    <>
-      {num > 0 && selectedCandidates.slice(0, num).some((result) => result === -1) ? null : (
-        <Flex p={4} flexDir="column">
-          <Text fontWeight="bold">Pilih Calon untuk Prioritas {num + 1}</Text>
-          <Flex pb={4} pt={2}>
-            <Select
-              placeholder={num === 0 ? "Pilih calon" : "Tidak memilih"}
-              onChange={handleChange}
-            >
-              {notSelected.map((profile, id) => (
-                <option key={id} value={profile.id}>
-                  {profile.nama}
-                </option>
-              ))}
-            </Select>
-          </Flex>
-        </Flex>
-      )}
-    </>
-  );
-};
+  useEffect(() => {
+    fetchData();
+  }, []);
 
-const StepOne = ({ timeLeft, onNext, changeStep }) => {
-  const allCandidates = candidateList;
-
-  const [selectedCandidates, setSelectedCandidates] = useState(
-    new Array(allCandidates.length).fill(-1)
-  );
+  const [selectedCandidates, setSelectedCandidates] = useState([]);
 
   const handleSelectedCandidates = (candidate, index) => {
     const arr = selectedCandidates;
@@ -81,7 +52,6 @@ const StepOne = ({ timeLeft, onNext, changeStep }) => {
           borderRadius={8}
           boxShadow="lg"
           bg="white"
-          w={["90vw", "80vw", "70vw", "50vw"]}
         >
           <Stack width="full" alignContent="center" p={4}>
             <Flex borderWidth={1} borderColor="#f4f4f4" width="full" borderRadius={4}>
@@ -91,6 +61,7 @@ const StepOne = ({ timeLeft, onNext, changeStep }) => {
             </Flex>
             <Flex flexDir="column">
               {timeLeft}
+              <PaslonList profileList={allCandidates} mt={4} spacing="20px" />
               <Stack width="full" alignContent="center" mt={4}>
                 {allCandidates.map((_, id) => (
                   <SelectCandidate
@@ -104,14 +75,14 @@ const StepOne = ({ timeLeft, onNext, changeStep }) => {
               </Stack>
             </Flex>
             <Flex width="full" justifyContent="center" flexDir="column" alignItems="center">
-              {selectedCandidates[0] === -1 ? null : (
+              {selectedCandidates[0] === -1 || selectedCandidates.length === 0 ? null : (
                 <Text color="red" textAlign="center">
                   Periksa kembali pilihan Anda sebelum klik next
                 </Text>
               )}
               <Button
                 mt={4}
-                disabled={selectedCandidates[0] === -1}
+                disabled={selectedCandidates[0] === -1 || selectedCandidates.length === 0}
                 width="full"
                 maxW="200px"
                 bg="#FF7315"
@@ -129,4 +100,4 @@ const StepOne = ({ timeLeft, onNext, changeStep }) => {
   );
 };
 
-export default StepOne;
+export default StepZero;

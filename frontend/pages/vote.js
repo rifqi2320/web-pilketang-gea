@@ -40,7 +40,7 @@ const Vote = () => {
   const { isVoted, token } = useAuthState();
 
   const API = axios.create({
-    baseURL: "http://localhost:5000",
+    baseURL: "https://backend-piketang-gea.azurewebsites.net",
     headers: { Authorization: "Bearer " + token },
   });
 
@@ -80,9 +80,8 @@ const Vote = () => {
   const handleSubmit = async () => {
     try {
       const timeTaken = Math.floor((Date.now() - time.start) / 1000);
-      console.log({ ...formData, timeTaken: timeTaken });
-      const result = await API.post("/vote", formData);
-
+      const result = await API.post("/vote", {...formData, timeTaken: timeTaken});
+      
       if (result) {
         return Router.push("/vote-success");
       }

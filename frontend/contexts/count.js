@@ -1,6 +1,6 @@
 import axios from "axios";
 
 export const getCount = async () => {
-  const res = await axios.get("http://localhost:5000/get_count");
+  const res = await axios.get("https://backend-piketang-gea.azurewebsites.net/get_count");
   return res.data;
 };

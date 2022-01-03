@@ -22,7 +22,7 @@ const PrivateRoute = ({ protectedRoutes, children }) => {
         return router.push("/login");
       }
 
-      const result = await axios.get("http://localhost:5000/user_data", {
+      const result = await axios.get("https://backend-piketang-gea.azurewebsites.net/user_data", {
         headers: { Authorization: "Bearer " + token },
       });
       if (result) {
@@ -44,7 +44,8 @@ const PrivateRoute = ({ protectedRoutes, children }) => {
       return result;
     } catch (error) {
       if (error.response?.status === 422) {
-        console.log(`Session error: ${error.message}`);
+        // console.log(`Session error: ${error.message}`);
+        // Session Error
         logout();
       }
     }

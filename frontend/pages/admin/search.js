@@ -43,7 +43,7 @@ const Search = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/get_users", {
+      .get("https://backend-piketang-gea.azurewebsites.net/get_users", {
         headers: { Authorization: "Bearer " + token },
       })
       .then((res) => {

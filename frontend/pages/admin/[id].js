@@ -70,14 +70,13 @@ const User = () => {
   const [voteData, setVoteData] = useState({});
 
   const API = axios.create({
-    baseURL: "http://localhost:5000",
+    baseURL: "https://backend-piketang-gea.azurewebsites.net/",
     headers: {
       Authorization: "Bearer " + token,
     },
   });
 
   useEffect(() => {
-    console.log(`id: ${id}`);
     API.post("/get_user", { nim: id })
       .then((res) => {
         setUserData(res.data.data);

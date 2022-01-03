@@ -1,7 +1,7 @@
 import axios from "axios";
 import { createContext, useContext, useEffect, useReducer } from "react";
 
-const API = axios.create({ baseURL: "http://localhost:5000" });
+const API = axios.create({ baseURL: "https://backend-piketang-gea.azurewebsites.net/" });
 
 export const actions = {
   REQUEST_LOGIN: "REQUEST_LOGIN",
