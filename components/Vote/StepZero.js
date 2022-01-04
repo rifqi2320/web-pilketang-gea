@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 import SelectCandidate from "./SelectCandidate";
 import PaslonList from "./PaslonList";
-import { Router } from "next/router";
+import Router from "next/router";
 
 const StepZero = ({ timeLeft, onNext, changeStep }) => {
   // const allCandidates = candidateList.bph;
@@ -11,7 +11,7 @@ const StepZero = ({ timeLeft, onNext, changeStep }) => {
 
   const fetchData = async () => {
     try {
-      const res = await fetch("https://pemilu-gea-2022.vercel.app/data_paslon.json");
+      const res = await fetch("https://pemilugea2021.xyz/data_paslon.json");
       const data = await res.json();
       setAllCandidates(data.bph);
       setSelectedCandidates(new Array(2).fill(-1));
