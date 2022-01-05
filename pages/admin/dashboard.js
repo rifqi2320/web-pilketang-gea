@@ -1,19 +1,21 @@
-import { Flex, Heading, Text, Button, VStack } from "@chakra-ui/react";
+import { Flex, Heading, Link, Text, Button, VStack } from "@chakra-ui/react";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Background from "../../components/Background/Background.js";
-import { logout, useAuthDispatch } from "../../contexts/auth.js";
+import { logout, useAuthDispatch, useAuthState, actions } from "../../contexts/auth.js";
 import { getVoteStat } from "../../contexts/data.js";
 import { getCount } from "../../contexts/count.js";
 import axios from "axios";
 
 const Admin = () => {
   const [dataStatus, setDataStatus] = useState({});
-  const [readyCount, setReadyCount] = useState(false);
-  const [isCounting, setIsCounting] = useState(false);
-  const [isVoting, setIsVoting] = useState(false);
+  const [readyCount, setReadyCount] = useState(null);
+  const [isCounting, setIsCounting] = useState(null);
+  const [isVoting, setIsVoting] = useState(null);
+  const [isFinished, setIsFinished] = useState(null);
   const dispatch = useAuthDispatch();
+  const { loading, authenticated } = useAuthState();
   const router = useRouter();
 
   const token = localStorage.getItem("token");
@@ -22,7 +24,7 @@ const Admin = () => {
   const toggleVoting = () => {
     axios
       .put(
-        `${window.location.origin}/toggle_voting`,
+        `https://backend-pilketang-gea.azurewebsites.net/toggle_voting`,
         {},
         {
           headers: { Authorization: "Bearer " + token },
@@ -30,6 +32,20 @@ const Admin = () => {
       )
       .then(() => {
         setIsVoting(!isVoting);
+      });
+  };
+
+  const toggleFinished = () => {
+    axios
+      .put(
+        `https://backend-pilketang-gea.azurewebsites.net/toggle_results`,
+        {},
+        {
+          headers: { Authorization: "Bearer " + token },
+        }
+      )
+      .then(() => {
+        setIsFinished(!isFinished);
       });
   };
 
@@ -67,7 +83,6 @@ const Admin = () => {
     } else {
       setIsVoting(false);
     }
-
     getVoteStat().then((res) => {
       setDataStatus(res);
       if (res["In Progress"] === 0) {
@@ -76,21 +91,31 @@ const Admin = () => {
         setReadyCount(false);
       }
     });
-    getCount().then((res) => {
-      if (res.senator) {
+    getCount("admin", token).then((res) => {
+      if (res) {
         setIsCounting(true);
       } else {
         setIsCounting(false);
       }
     });
-    console.log(isCounting);
-    console.log(readyCount);
+    getCount("12020001", "").then((res) => {
+      if (res) {
+        setIsFinished(true);
+      } else {
+        setIsFinished(false);
+      }
+    });
+
+    dispatch({ type: actions.STOP_LOADING });
   }, []);
 
   const handleLogout = () => {
     logout(dispatch);
   };
 
+  if (loading || !authenticated) {
+    return <FullPageLoader />;
+  }
   return (
     <Background>
       <Flex width="100vw" minH="100vh" justifyContent="center" alignItems="center">
@@ -111,21 +136,18 @@ const Admin = () => {
               <Button colorScheme="teal" as="a" href="search" variant="outline">
                 Verifikasi Peserta
               </Button>
+              <Button colorScheme="teal" as="a" href="/dashboard" variant="outline" mt={4}>
+                Dashboard
+              </Button>
               {isCounting ? (
-                <Button
-                  colorScheme="yellow"
-                  onClick={toggleCounting}
-                  isDisabled={!readyCount}
-                  variant="outline"
-                  mt={4}
-                >
+                <Button colorScheme="yellow" onClick={toggleCounting} variant="outline" mt={4}>
                   Stop Counting
                 </Button>
               ) : (
                 <Button
                   colorScheme="yellow"
                   onClick={toggleCounting}
-                  isDisabled={!readyCount}
+                  isDisabled={!readyCount || isVoting}
                   variant="outline"
                   mt={4}
                 >
@@ -133,24 +155,27 @@ const Admin = () => {
                 </Button>
               )}
               {isVoting ? (
-                <Button
-                  colorScheme="yellow"
-                  onClick={toggleVoting}
-                  isDisabled={!readyCount}
-                  variant="outline"
-                  mt={4}
-                >
+                <Button colorScheme="yellow" onClick={toggleVoting} variant="outline" mt={4}>
                   Stop Voting
+                </Button>
+              ) : (
+                <Button colorScheme="yellow" onClick={toggleVoting} variant="outline" mt={4}>
+                  Start Voting
+                </Button>
+              )}
+              {isFinished ? (
+                <Button colorScheme="yellow" onClick={toggleFinished} variant="outline" mt={4}>
+                  Hide Results
                 </Button>
               ) : (
                 <Button
                   colorScheme="yellow"
-                  onClick={toggleVoting}
-                  isDisabled={!readyCount}
+                  onClick={toggleFinished}
+                  isDisabled={!isCounting && isVoting}
                   variant="outline"
                   mt={4}
                 >
-                  Start Voting
+                  Show Results
                 </Button>
               )}
               <Button

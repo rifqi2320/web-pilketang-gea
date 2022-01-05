@@ -6,6 +6,7 @@ export const getVoteStat = async () => {
 };
 
 export const getPaslonData = async () => {
-  const res = await axios.get("https://backend-pilketang-gea.azurewebsites.net/get_paslon");
-  return res.data;
+  const res = await fetch("https://pemilugea2021.xyz/data_paslon.json");
+  const data = await res.json();
+  return data;
 };

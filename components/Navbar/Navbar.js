@@ -110,9 +110,10 @@ const Navbar = ({ children, ...props }) => {
           display={["none", "none", "flex", "flex"]}
         >
           <DesktopMenuItem to="/dashboard">Dashboard</DesktopMenuItem>
-          <DesktopMenuItem to="/count-bph" id="votenow">
-            Live Count
-          </DesktopMenuItem>
+          <DesktopMenuItem to="/count-bph">Hasil Counting</DesktopMenuItem>
+          {user === "admin" ? (
+            <DesktopMenuItem to="/admin/dashboard">Dashboard Admin</DesktopMenuItem>
+          ) : null}
         </HStack>
         <Spacer display={["none", "none", "flex", "flex"]} />
         <HStack
@@ -124,12 +125,7 @@ const Navbar = ({ children, ...props }) => {
           display={["none", "none", "flex", "flex"]}
         >
           <Text>{user}</Text>
-          <Button
-            size="sm"
-            colorScheme="gray"
-            textColor="orange"
-            onClick={handleLogout}
-          >
+          <Button size="sm" colorScheme="gray" textColor="orange" onClick={handleLogout}>
             Logout
           </Button>
         </HStack>
@@ -148,16 +144,23 @@ const Navbar = ({ children, ...props }) => {
           <DrawerOverlay />
           <DrawerContent bg="#FF7315" textColor="white">
             <DrawerCloseButton />
-            <DrawerHeader bg="#F58539" textAlign="center">{user}</DrawerHeader>
+            <DrawerHeader bg="#F58539" textAlign="center">
+              {user}
+            </DrawerHeader>
             <DrawerBody>
               <MobileMenuItem to="/dashboard">Dashboard</MobileMenuItem>
-              <MobileMenuItem to="/count-bph">Live Count</MobileMenuItem>
+              <MobileMenuItem to="/count-bph">Hasil Counting</MobileMenuItem>
+              {user === "admin" ? (
+                <MobileMenuItem to="/admin/dashboard">Dashboard Admin</MobileMenuItem>
+              ) : null}
               <MobileMenuItem to="/login" onClick={handleLogout}>
                 Logout
               </MobileMenuItem>
             </DrawerBody>
             <Spacer />
-            <Text p={4} textAlign="center" fontWeight="semibold">Pemilu HMTG "GEA" 2022</Text>
+            <Text p={4} textAlign="center" fontWeight="semibold">
+              Pemilu HMTG "GEA" 2021
+            </Text>
           </DrawerContent>
         </Drawer>
       </Flex>

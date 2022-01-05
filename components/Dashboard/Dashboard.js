@@ -34,8 +34,8 @@ const Dashboard = () => {
   }, []);
 
   const handleClick = () => {
-    router.push('/vote');
-  }
+    router.push("/vote");
+  };
 
   return (
     <Background minH={"100vh"} justifyContent="center">
@@ -60,26 +60,49 @@ const Dashboard = () => {
             color="white"
           >
             <Heading size="xl" m={2} align="center" w="full">
-              Pemilu HMTG "GEA" 2022
+              Pemilu HMTG "GEA" 2021
             </Heading>
             <Heading size="xl" m={2}></Heading>
           </Stack>
           <Box>
             <Stack
               m={2}
-              direction={["column", "row"]}
+              direction={["column", "row", "row", "row"]}
               divider={<StackDivider borderColor="gray.300" />}
+              pb={4}
             >
-              <Container>
+              <Container w={["100%", "170%", "170%", "170%"]}>
                 <Heading m={4} size="lg">
                   Panduan Pemilihan
                 </Heading>
-                <OrderedList>
-                  <ListItem>Pergi ke halaman pemilihan dengan menekan "Voting Sekarang"</ListItem>
-                  <ListItem>Pilih kandidat</ListItem>
+                <OrderedList textAlign={"justify"}>
+                  <ListItem>Klik tombol "Voting Sekarang"</ListItem>
+                  <ListItem>Anda akan memasuki halaman pemungutan suara</ListItem>
+                  <ListItem>
+                    Pilih calon ketua umum BPH HMTG "GEA" ITB berdasarkan prioritas yang anda
+                    inginkan.
+                  </ListItem>
+                  <ListItem>
+                    Lanjut ke halaman selanjutnya, pilih calon Senator HMTG "GEA" ITB berdasarkan
+                    prioritas yang anda inginkan.
+                  </ListItem>
+                  <ListItem>
+                    Ambil foto wajah dengan menyertakan kartu identitas seperti KTM,KTP,atau kartu
+                    lainnya dengan terlihat wajah dan identitas dengan jelas dalam satu frame.
+                    (Kartu identitas yang dipilih minimal dengan foto yang diambil saat SMA)
+                  </ListItem>
+                  <ListItem>Setelah itu, klik tombol submit.</ListItem>
+                  <ListItem>Klik tombol konfirmasi.</ListItem>
+                  <ListItem>
+                    <b>
+                      Perlu diingat waktu yang diberikan selama pemilihan adalah 8 menit. Jika
+                      pemilih melebihi waktu yang diberikan maka akan auto tersubmit dengan suara
+                      kosong.
+                    </b>
+                  </ListItem>
                 </OrderedList>
               </Container>
-              <Container p={4}>
+              <Container p={4} w={["100%", "50%", "50%", "50%"]} textAlign={"justify"}>
                 <UnorderedList>
                   <ListItem>
                     <Text>Belum voting : {voteData ? voteData["Not Voted"] : "-"}</Text>
@@ -96,7 +119,7 @@ const Dashboard = () => {
                 <Text my={4}>
                   Status Suara Anda : <b>{isVoted == 0 ? "Belum Ada" : "Sudah Ada"}</b>
                 </Text>
-                {isVoted == 0 ? (
+                {(isVoted == 0) | (isVoted == 2) ? (
                   <Button
                     size="sm"
                     colorScheme="whiteAlpha"
@@ -108,7 +131,7 @@ const Dashboard = () => {
                     Vote Sekarang
                   </Button>
                 ) : (
-                  <Button size="sm" isDisabled={true} variant={"solid"}>
+                  <Button size={"sm"} isDisabled={true} variant={"solid"}>
                     Anda sudah melakukan voting
                   </Button>
                 )}
