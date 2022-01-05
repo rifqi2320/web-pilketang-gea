@@ -2,7 +2,7 @@ from pymongo import MongoClient
 from random import shuffle
 from datetime import datetime
 
-N = 100
+N = 5
 # MongoDB Stuff
 cluster = MongoClient("mongodb+srv://vito:ZBv1zgjEjFtt9k7x@cluster0.epqqw.gcp.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
 db = cluster["pilketang-gea"]
@@ -19,6 +19,6 @@ for i in range(N):
     "timestamp" : datetime.now().strftime("%d-%b-%Y (%H:%M:%S)"),
     "img_url" : "no",
     "timeTaken" : 0,
-    "status" : 2
+    "status" : 0
   }
   db["votes"].insert_one(data)

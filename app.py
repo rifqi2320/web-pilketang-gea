@@ -31,7 +31,8 @@ app.config["JWT_ACCESS_TOKEN_EXPIRES"] = False
 jwt = JWTManager(app)
 
 #State Backend
-isVoting = True
+isVoting = False
+isFinished = False
 
 @app.route("/login", methods=['POST'])
 def login():
@@ -338,10 +339,8 @@ def get_vote(arrVote, BPH):
         return paslon
   return -1
 
-def count():
+def count(t, n):
   global tempCount
-  t = datetime.now()
-  n = int(min(len(tempVote), (t - tempTime).total_seconds()//5))
   tempCount = {
     "timestamp" : t.strftime("%d-%b-%Y (%H:%M:%S)"),
     "bph" : [0 for _ in range(2)],
@@ -359,19 +358,41 @@ def count():
   return tempCount
 
 @app.route("/get_count")
+@jwt_required()
 def get_count():
   global isCounting, tempVote, tempTime, tempCount
+  identity = get_jwt_identity()
+  if identity != "admin":
+    return {}, 401
   if isCounting:
     t = datetime.now()
-    n = int(min(len(tempVote), (t - tempTime).total_seconds()//5)) # 5 nya waktu per vote terhintung
+    n = int(min(len(tempVote), (t - tempTime).total_seconds()//1)) # 5 nya waktu per vote terhintung
     if n == tempCount["counted"]:
       res = tempCount
     else:
-      res = count()
+      res = count(t, n)
     return res, 200
   else:
     return {}, 204
 
+@app.route("/get_results")
+def get_results():
+  global tempCount, isFinished
+  if isFinished:
+    return tempCount
+  else:
+    return {}, 401
+
+
+@app.route("/toggle_results", methods=["PUT"])
+@jwt_required()
+def toggle_voting():
+  global isFinished
+  identity = get_jwt_identity()
+  if identity != "admin":
+    return {}, 401
+  isFinished = not isFinished
+  return {}, 201
   
 
 if __name__ == "__main__":
