@@ -22,7 +22,7 @@ const Admin = () => {
   const toggleVoting = () => {
     axios
       .put(
-        "http://localhost:5000/toggle_voting",
+        `${window.location.origin}/toggle_voting`,
         {},
         {
           headers: { Authorization: "Bearer " + token },
