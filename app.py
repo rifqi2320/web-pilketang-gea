@@ -243,7 +243,7 @@ def toggle_voting():
   if identity != "admin":
     return {}, 401
   isVoting = not isVoting
-  return {}, 201
+  return {}, 202
 
 @app.route("/get_paslon")
 def get_paslon():
@@ -380,7 +380,9 @@ def get_count():
 def get_results():
   global tempCount, isFinished
   if isFinished:
-    return tempCount
+    t = datetime.now()
+    res = count(t, 350)
+    return res, 200
   else:
     return {}, 401
 
@@ -393,7 +395,7 @@ def toggle_results():
   if identity != "admin":
     return {}, 401
   isFinished = not isFinished
-  return {}, 201
+  return {}, 202
   
 
 if __name__ == "__main__":
