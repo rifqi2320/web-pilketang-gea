@@ -378,10 +378,10 @@ def get_count():
 
 @app.route("/get_results")
 def get_results():
-  global tempCount, isFinished
+  global tempCount, isFinished, tempVote
   if isFinished:
     t = datetime.now()
-    res = count(t, 350)
+    res = count(t, len(tempVote))
     return res, 200
   else:
     return {}, 401
@@ -399,4 +399,4 @@ def toggle_results():
   
 
 if __name__ == "__main__":
-  app.run(port=8000)
+  app.run(port=8000, debug=True)
