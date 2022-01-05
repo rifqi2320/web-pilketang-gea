@@ -64,6 +64,7 @@ def get_user_data():
     res = user
     res.pop("_id", None)
     res.pop("password", None)
+    res["vote_enabled"] = isVoting
     return res, 200
   else:
     return {}, 400
