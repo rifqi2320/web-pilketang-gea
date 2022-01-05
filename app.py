@@ -386,7 +386,7 @@ def get_results():
 
 @app.route("/toggle_results", methods=["PUT"])
 @jwt_required()
-def toggle_voting():
+def toggle_results():
   global isFinished
   identity = get_jwt_identity()
   if identity != "admin":
