@@ -1,4 +1,4 @@
-import { Stack, Flex, Heading, Text, Button, Image } from "@chakra-ui/react";
+import { Stack, Flex, Heading, Text, Button } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 
 import SelectCandidate from "./SelectCandidate";
@@ -45,6 +45,7 @@ const StepZero = ({ timeLeft, onNext, changeStep }) => {
     <>
       <Flex justifyContent="center" width="100vw" height="full">
         <Flex
+          m={2}
           mt={28}
           mb={8}
           bg="#ffffff"
@@ -56,7 +57,7 @@ const StepZero = ({ timeLeft, onNext, changeStep }) => {
           <Stack width="full" alignContent="center" p={4}>
             <Flex borderWidth={1} borderColor="#f4f4f4" width="full" borderRadius={4}>
               <Heading m={12} mt={2} mb={2} textAlign="center" width="full">
-                Vote Ketua BPH
+                Vote Calon Ketua Umum BPH HMTG "GEA" 2021
               </Heading>
             </Flex>
             <Flex flexDir="column">

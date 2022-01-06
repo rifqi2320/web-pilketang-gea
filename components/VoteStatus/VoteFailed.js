@@ -5,6 +5,7 @@ const VoteFailed = () => {
   return (
     <Background minH="100vh" justifyContent="center" alignItems="center">
       <Flex
+        m={4}
         mt={28}
         mb={8}
         bg="#ffffff"

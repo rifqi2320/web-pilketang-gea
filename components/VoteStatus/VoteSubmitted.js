@@ -1,7 +1,7 @@
 import { Alert, AlertIcon, Flex, Heading, Link, Text } from "@chakra-ui/react";
 import Background from "../Background/Background";
 
-const VoteSuccess = () => {
+const VoteSubmitted = () => {
   return (
     <Background minH="100vh" justifyContent="center" alignItems="center">
       <Flex
@@ -16,14 +16,14 @@ const VoteSuccess = () => {
         flexDir="column"
       >
         <Flex p={8} pb={4} flexDir="column">
-          <Alert status="success" borderRadius={4} maxW="500px">
+          <Alert status="warning" borderRadius={4} maxW="500px">
             <AlertIcon />
             <Flex flexDir="column" textAlign="center">
               <Heading fontSize="xl" p={2} pb={2}>
-                Berhasil Melakukan Vote
+                Vote Telah Dikirim
               </Heading>
               <Text p={2} pt={2}>
-                Hasil vote dan bukti vote Anda akan segera diproses oleh panitia. Terima kasih telah melakukan voting.
+                Hasil vote Anda telah di-submit karena telah melewati batas waktu.
               </Text>
             </Flex>
           </Alert>
@@ -45,4 +45,4 @@ const VoteSuccess = () => {
   );
 };
 
-export default VoteSuccess;
+export default VoteSubmitted;

@@ -99,6 +99,8 @@ const Navbar = ({ children, ...props }) => {
         color="white"
         height={16}
         zIndex={50}
+        borderBottomColor="#fb6500"
+        borderBottomWidth={1}
         {...props}
       >
         <Logo pl={4} pr={4} alignItems="center" display="flex" />

@@ -10,7 +10,7 @@ const DoneVote = () => {
 
   return (
     <Background minH="100vh" w="100vw" justifyContent="center" alignItems="center">
-      <Flex bg="white" borderRadius={8} boxShadow="lg" h="full" flexDir="column">
+      <Flex bg="white" borderRadius={8} boxShadow="lg" h="full" flexDir="column" m={2}>
         <Flex p={8} pb={0}>
           <Heading textAlign="center" width="full">Telah Melakukan Vote</Heading>
         </Flex>

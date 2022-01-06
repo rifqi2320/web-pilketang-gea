@@ -15,7 +15,6 @@ import { useRouter } from "next/router";
 
 import Background from "../../components/Background/Background";
 import { useEffect, useState } from "react";
-import { useAuthState } from "../../contexts/auth";
 import axios from "axios";
 import FullPageLoader from "../../components/FullPageLoader/FullPageLoader";
 
@@ -140,7 +139,7 @@ const User = () => {
           ) : (
             <>
               <Flex flexDir={"column"} textAlign={"center"}>
-                <Text px={8}>Lama pengisian suara: {voteData.timeTaken}</Text>
+                <Text px={8}>Lama pengisian suara: {moment.utc(voteData.timeTaken * 1000).format("m [menit] s [detik]") }</Text>
                 <Text px={8}>Waktu pengisian suara: {voteData.timestamp} </Text>
               </Flex>
               <Flex

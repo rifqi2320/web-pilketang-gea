@@ -16,6 +16,7 @@ import {
 import { useRouter } from "next/router";
 
 import { actions, login, useAuthDispatch, useAuthState } from "../../contexts/auth.js";
+import Background from "../Background/Background.js";
 
 const formInitialState = {
   username: "",
@@ -68,7 +69,7 @@ const Login = () => {
   };
 
   return (
-    <Flex width="full" align="center" justifyContent="center">
+    <Background width="full" minH="100vh" align="center" justifyContent="center">
       <Box
         px={8}
         py={4}
@@ -114,7 +115,7 @@ const Login = () => {
           </form>
         </Box>
       </Box>
-    </Flex>
+    </Background>
   );
 };
 

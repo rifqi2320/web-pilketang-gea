@@ -17,16 +17,18 @@ moment.locale();
 const initialFormData = {
   bph_id: null,
   senator_id: null,
-  img_data: null,
+  img_data: "",
   timeTaken: 0,
 };
 
 const TimeLeft = ({ time, ...props }) => {
+  const timeLeft = 60 * 8 - time;
+
   return (
     <Flex textAlign="center" {...props} width="full" alignItems="center" flexDir="column">
-      <Text>Waktu vote:</Text>
-      <Text textColor={time < 480 ? "black" : "red"}>
-        {moment.utc(time * 1000).format("mm:ss")}
+      <Text>Waktu tersisa:</Text>
+      <Text textColor={timeLeft > 0 ? "black" : "red"}>
+        {timeLeft > 0 ? moment.utc(timeLeft * 1000).format("mm:ss") : "00:00"}
       </Text>
     </Flex>
   );
@@ -35,7 +37,7 @@ const TimeLeft = ({ time, ...props }) => {
 const Vote = () => {
   const [formData, setFormData] = useState(initialFormData);
   const [step, setStep] = useState(0);
-  const [time, setTime] = useState({ start: 0, taken: 0 });
+  const [time, setTime] = useState({ start: Date.now(), taken: 0 });
 
   const { isVoted, token } = useAuthState();
 
@@ -49,10 +51,16 @@ const Vote = () => {
   };
 
   useEffect(() => {
-    const startTime = localStorage.getItem("startTime");
+    const voteEnabled = localStorage.getItem("vote_enabled");
+    let startTime = localStorage.getItem("startTime");
+
+    if (voteEnabled === "false" || !voteEnabled) {
+      return Router.push("/dashboard");
+    }
 
     if (!startTime) {
-      localStorage.setItem("startTime", Date.now());
+      startTime = Date.now();
+      localStorage.setItem("startTime", startTime);
       return setTime({ start: startTime, taken: 0 });
     }
 
@@ -62,8 +70,28 @@ const Vote = () => {
 
   useEffect(() => {
     const timer = setInterval(handleTime, 1000);
+
+    if (time.taken > 8 * 60 && isVoted === 0) {
+      handleAutoSubmit();
+    }
+
     return () => clearInterval(timer);
   }, [time.taken]);
+
+  const handleAutoSubmit = async () => {
+    const timeTaken = Math.floor((Date.now() - time.start) / 1000);
+    const autoSubmitData = {
+      ...formData,
+      bph_id: [-1, -1],
+      senator_id: [-1, -1],
+    };
+    try {
+      const result = await API.post("/vote", { ...autoSubmitData, timeTaken: timeTaken });
+      if (result) Router.push("/vote-submitted");
+    } catch (error) {
+      Router.push("/vote-submitted");
+    }
+  };
 
   const handleSelectedBPH = (candidates) => {
     setFormData({ ...formData, bph_id: candidates });
@@ -80,8 +108,8 @@ const Vote = () => {
   const handleSubmit = async () => {
     try {
       const timeTaken = Math.floor((Date.now() - time.start) / 1000);
-      const result = await API.post("/vote", {...formData, timeTaken: timeTaken});
-      
+      const form = { ...formData, timeTaken: timeTaken };
+      const result = await API.post("/vote", form);
       if (result) {
         return Router.push("/vote-success");
       }
@@ -92,7 +120,7 @@ const Vote = () => {
 
   if (typeof window !== undefined) {
     if (isVoted !== undefined) {
-      if (isVoted !== 0) {
+      if (isVoted !== 0 && isVoted !== 2) {
         return <DoneVote />;
       }
     }
