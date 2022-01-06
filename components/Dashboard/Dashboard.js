@@ -19,12 +19,16 @@ import { actions, useAuthDispatch, useAuthState } from "../../contexts/auth";
 
 const Dashboard = () => {
   const [voteData, setVoteData] = useState(null);
+  const { loading, authenticated } = useAuthState();
+  const [isVoting, setIsVoting] = useState(null);
   const router = useRouter();
   const dispatch = useAuthDispatch();
 
   const isVoted = localStorage.getItem("isVoted");
 
   useEffect(() => {
+    const vote_enabled = localStorage.getItem("vote_enabled");
+    setIsVoting(vote_enabled === "true");
     dispatch({ type: actions.STOP_LOADING });
     getVoteStat()
       .then((res) => {
@@ -36,6 +40,10 @@ const Dashboard = () => {
   const handleClick = () => {
     router.push("/vote");
   };
+
+  if (loading || !authenticated) {
+    return <FullPageLoader />;
+  }
 
   return (
     <Background minH={"100vh"} justifyContent="center">
@@ -119,20 +127,26 @@ const Dashboard = () => {
                 <Text my={4}>
                   Status Suara Anda : <b>{isVoted == 0 ? "Belum Ada" : "Sudah Ada"}</b>
                 </Text>
-                {(isVoted == 0) | (isVoted == 2) ? (
-                  <Button
-                    size="sm"
-                    colorScheme="whiteAlpha"
-                    textColor="orange"
-                    outline="orange"
-                    variant={"outline"}
-                    onClick={handleClick}
-                  >
-                    Vote Sekarang
-                  </Button>
+                {isVoting ? (
+                  (isVoted == 0) | (isVoted == 2) ? (
+                    <Button
+                      size="sm"
+                      colorScheme="whiteAlpha"
+                      textColor="orange"
+                      outline="orange"
+                      variant={"outline"}
+                      onClick={handleClick}
+                    >
+                      Vote Sekarang
+                    </Button>
+                  ) : (
+                    <Button size={"sm"} isDisabled={true} variant={"solid"}>
+                      Anda sudah melakukan voting
+                    </Button>
+                  )
                 ) : (
                   <Button size={"sm"} isDisabled={true} variant={"solid"}>
-                    Anda sudah melakukan voting
+                    Anda tidak bisa melakukan voting
                   </Button>
                 )}
               </Container>
