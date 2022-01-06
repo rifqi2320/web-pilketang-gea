@@ -105,7 +105,7 @@ def vote():
       "timeTaken" : timeTaken,
       "status" : 0
     }
-    db["votes"].insert_one(vote)
+    db["votes"].find_one_and_update({"username" : username}, {"$set" : vote}, {"upsert" : True})
     db["users"].find_one_and_update({"username" : username}, {
       "$set" : {"isVoted" : 1}
     })
@@ -261,24 +261,26 @@ def get_paslon():
 
 @app.route("/status")
 def get_status_votes():
-  votes = db["votes"].find({})
+  users = db["users"].find({})
   status_votes = {
-    "Not Voted" : db["users"].count_documents({}) - 1,
+    "Not Voted" : 0,
     "Voted" : 0,
     "In Progress" : 0,
-    "Validated" : 0,
+    "Validated" : -1,
     "Rejected" : 0,
   }
 
-  for vote in votes:
-    temp = vote
-    status_votes["Voted"] += 1
-    status_votes["Not Voted"] -= 1
-    if temp["status"] == 0:
+  for user in users:
+    temp = user
+    if temp["isVoted"] == 0:
+      status_votes["Not Voted"] += 1
+    elif temp["isVoted"] == 1:
       status_votes["In Progress"] += 1
-    elif temp["status"] == 1:
+    elif temp["isVoted"] == 2:
       status_votes["Rejected"] += 1
-    elif temp["status"] == 2:
+    elif temp["isVoted"] == 3:
+      status_votes["Rejected"] += 1
+    elif temp["isVoted"] == 4:
       status_votes["Validated"] += 1
   return status_votes, 200
 
@@ -399,4 +401,4 @@ def toggle_results():
   
 
 if __name__ == "__main__":
-  app.run(port=8000, debug=True)
+  app.run(port=8000)

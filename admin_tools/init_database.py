@@ -20,7 +20,7 @@ db["votes"].delete_many({})
 data_user.insert_one({
     "username" : "admin",
     "password" : "admin_" + sha1("admin".encode()).hexdigest()[:16],
-    "isVoted" : 3,
+    "isVoted" : 4,
     "type" : "admin"
   })
 
