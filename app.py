@@ -79,7 +79,6 @@ def vote():
   if user:
     if user["isVoted"] == 1 or user["isVoted"] == 3:
       return {}, 401
-    
     bph_id = request.json.get('bph_id')
     senator_id = request.json.get('senator_id')
     img_data = request.json.get('img_data')
@@ -105,7 +104,11 @@ def vote():
       "timeTaken" : timeTaken,
       "status" : 0
     }
-    db["votes"].find_one_and_update({"username" : username}, {"$set" : vote}, {"upsert" : True})
+    temp = db["votes"].find_one({"username" : username})
+    if temp:
+      db["votes"].find_one_and_update({"username" : username}, {"$set" : vote}, {"upsert" : True})
+    else:
+      db["votes"].insert_one(vote)
     db["users"].find_one_and_update({"username" : username}, {
       "$set" : {"isVoted" : 1}
     })
