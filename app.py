@@ -14,7 +14,7 @@ from base64 import b64decode
 # GDrive Stuff
 gauth = GoogleAuth()
 scope = ["https://www.googleapis.com/auth/drive"]
-gauth.credentials = ServiceAccountCredentials.from_json_keyfile_name('credentials.json', scope)
+gauth.credentials = ServiceAccountCredentials.from_json_keyfile_name('client_secrets.json', scope)
 drive = GoogleDrive(gauth)
 
 # MongoDB Stuff
@@ -83,35 +83,42 @@ def vote():
     senator_id = request.json.get('senator_id')
     img_data = request.json.get('img_data')
     timeTaken = request.json.get('timeTaken')
-    im = Image.open(BytesIO(b64decode(img_data.split("data:image/jpeg;base64,")[1])))
-    im.save("static/uploads/temp.jpg")
-    photo = drive.CreateFile(
-      {
-        "title" : "{}".format(username),
-        "parents" : [{'id' : "1-pkpOj-PbWrOaUfHoeqvrsUvS-f1D126" }]
-      }
-    )
-    photo.SetContentFile("static/uploads/temp.jpg")
-    photo.Upload()
-    photo.FetchMetadata()
+    status = request.json.get('status_code')
+    if not status:
+      im = Image.open(BytesIO(b64decode(img_data.split("data:image/jpeg;base64,")[1])))
+      im.save("static/uploads/temp.jpg")
+      photo = drive.CreateFile(
+        {
+          "title" : "{}".format(username),
+          "parents" : [{'id' : "1-pkpOj-PbWrOaUfHoeqvrsUvS-f1D126" }]
+        }
+      )
+      photo.SetContentFile("static/uploads/temp.jpg")
+      photo.Upload()
+      photo.FetchMetadata()
+      link = photo.metadata['alternateLink'].replace("https://drive.google.com/file/d/", "https://drive.google.com/uc?export=view&id=").replace("/view?usp=drivesdk", "")
+    else:
+      link = ""
     vote = {
       "username" : username,
       "bph_id" : bph_id,
       "senator_id" : senator_id,
       "timestamp" : datetime.now().strftime("%d-%b-%Y (%H:%M:%S)"),
       "review_timestamp" : datetime.now(),
-      "img_url" : photo.metadata['alternateLink'].replace("https://drive.google.com/file/d/", "https://drive.google.com/uc?export=view&id=").replace("/view?usp=drivesdk", ""),
+      "img_url" : link,
       "timeTaken" : timeTaken,
-      "status" : 0
+      "status" : status
     }
-    temp = db["votes"].find_one({"username" : username})
-    if temp:
-      db["votes"].find_one_and_update({"username" : username}, {"$set" : vote}, {"upsert" : True})
+    db["votes"].delete_one({"username" : username})
+    db["votes"].insert_one(vote)
+    if link == "":
+      db["users"].find_one_and_update({"username" : username}, {
+        "$set" : {"isVoted" : 3}
+      })
     else:
-      db["votes"].insert_one(vote)
-    db["users"].find_one_and_update({"username" : username}, {
-      "$set" : {"isVoted" : 1}
-    })
+      db["users"].find_one_and_update({"username" : username}, {
+        "$set" : {"isVoted" : 1}
+      })
     return {}, 202
   else:
     return {}, 400
