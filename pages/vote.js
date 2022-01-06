@@ -84,9 +84,11 @@ const Vote = () => {
       ...formData,
       bph_id: [-1, -1],
       senator_id: [-1, -1],
+      img_data: "",
     };
     try {
       const result = await API.post("/vote", { ...autoSubmitData, timeTaken: timeTaken, status_code: 1 });
+      localStorage.removeItem("startTime");
       if (result) Router.push("/vote-submitted");
     } catch (error) {
       Router.push("/vote-submitted");
@@ -109,6 +111,7 @@ const Vote = () => {
     try {
       const timeTaken = Math.floor((Date.now() - time.start) / 1000);
       const form = { ...formData, timeTaken: timeTaken, status_code: 0 };
+      localStorage.removeItem("startTime");
       const result = await API.post("/vote", form);
       if (result) {
         return Router.push("/vote-success");

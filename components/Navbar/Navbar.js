@@ -94,7 +94,7 @@ const Navbar = ({ children, ...props }) => {
         as="nav"
         position="fixed"
         alignItems="flex-end"
-        justify="space-between"
+        // justify="space-between"
         wrap="wrap"
         bg="#FF7315"
         color="white"
@@ -104,9 +104,11 @@ const Navbar = ({ children, ...props }) => {
         borderBottomWidth={1}
         {...props}
       >
-        {/* <Logo pl={4} pr={4} alignItems="center" display="flex" /> */}
-        <Flex alignItems="center" height="full">
-          <Image src="/images/hmtg_gea.png" boxSize="60px" mr={8} ml={1} userSelect="none" />
+        <Flex alignItems="center" height="64px">
+          <Image src="/images/hmtg_gea_pemilu.png" height="64px" userSelect="none" />
+        </Flex>
+        <Flex w="75px" height="64px" bgGradient='linear(to-r, white, #ff7315)'>
+
         </Flex>
         <HStack
           spacing="0"
@@ -121,7 +123,7 @@ const Navbar = ({ children, ...props }) => {
             <DesktopMenuItem to="/admin/dashboard">Dashboard Admin</DesktopMenuItem>
           ) : null}
         </HStack>
-        <Spacer display={["none", "none", "flex", "flex"]} />
+        <Spacer display={["flex", "flex", "flex", "flex"]} />
         <HStack
           mr={4}
           mt={0}
