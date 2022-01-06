@@ -1,9 +1,16 @@
-import VoteFailed from "../components/VoteStatus/VoteFailed"
+import Head from "next/head";
+
+import VoteFailed from "../components/VoteStatus/VoteFailed";
 
 const Failed = () => {
   return (
-    <VoteFailed />
-  )
-}
+    <>
+      <Head>
+        <title>Vote Failed - PEMILU HMTG "GEA" 2021</title>
+      </Head>
+      <VoteFailed />
+    </>
+  );
+};
 
-export default Failed
+export default Failed;

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Flex, Text } from "@chakra-ui/react";
 import moment from "moment";
+import Head from "next/head";
 
 import StepZero from "../components/Vote/StepZero.js";
 import StepOne from "../components/Vote/StepOne.js";
@@ -71,7 +72,7 @@ const Vote = () => {
   useEffect(() => {
     const timer = setInterval(handleTime, 1000);
 
-    if ((time.taken > 8 * 60) && (isVoted === 0)) {
+    if (time.taken > 8 * 60 && isVoted === 0) {
       handleAutoSubmit();
     }
 
@@ -87,7 +88,11 @@ const Vote = () => {
       img_data: "",
     };
     try {
-      const result = await API.post("/vote", { ...autoSubmitData, timeTaken: timeTaken, status_code: 1 });
+      const result = await API.post("/vote", {
+        ...autoSubmitData,
+        timeTaken: timeTaken,
+        status_code: 1,
+      });
       localStorage.removeItem("startTime");
       if (result) Router.push("/vote-submitted");
     } catch (error) {
@@ -134,6 +139,9 @@ const Vote = () => {
     case 0:
       return (
         <>
+          <Head>
+            <title>Vote Calon BPH - PEMILU HMTG "GEA" 2021</title>
+          </Head>
           <Navbar />
           <Background minH="100vh">
             <StepZero
@@ -148,6 +156,9 @@ const Vote = () => {
     case 1:
       return (
         <>
+          <Head>
+            <title>Vote Calon Senator - PEMILU HMTG "GEA" 2021</title>
+          </Head>
           <Navbar />
           <Background minH="100vh">
             <StepOne
@@ -162,6 +173,9 @@ const Vote = () => {
     case 2:
       return (
         <>
+          <Head>
+            <title>Bukti Foto - PEMILU HMTG "GEA" 2021</title>
+          </Head>
           <Navbar />
           <Background minH="100vh">
             <StepTwo

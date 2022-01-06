@@ -1,9 +1,16 @@
-import VoteSuccess from "../components/VoteStatus/VoteSuccess"
+import Head from "next/head";
+
+import VoteSuccess from "../components/VoteStatus/VoteSuccess";
 
 const Success = () => {
   return (
-    <VoteSuccess />
-  )
-}
+    <>
+      <Head>
+        <title>Vote Success - PEMILU HMTG "GEA" 2021</title>
+      </Head>
+      <VoteSuccess />
+    </>
+  );
+};
 
-export default Success
+export default Success;
