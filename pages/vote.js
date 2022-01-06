@@ -71,7 +71,7 @@ const Vote = () => {
   useEffect(() => {
     const timer = setInterval(handleTime, 1000);
 
-    if (time.taken > 8 * 60 && isVoted === 0) {
+    if ((time.taken > 8 * 60) && (isVoted === 0)) {
       handleAutoSubmit();
     }
 
@@ -86,7 +86,7 @@ const Vote = () => {
       senator_id: [-1, -1],
     };
     try {
-      const result = await API.post("/vote", { ...autoSubmitData, timeTaken: timeTaken });
+      const result = await API.post("/vote", { ...autoSubmitData, timeTaken: timeTaken, status_code: 1 });
       if (result) Router.push("/vote-submitted");
     } catch (error) {
       Router.push("/vote-submitted");
@@ -108,12 +108,13 @@ const Vote = () => {
   const handleSubmit = async () => {
     try {
       const timeTaken = Math.floor((Date.now() - time.start) / 1000);
-      const form = { ...formData, timeTaken: timeTaken };
+      const form = { ...formData, timeTaken: timeTaken, status_code: 0 };
       const result = await API.post("/vote", form);
       if (result) {
         return Router.push("/vote-success");
       }
     } catch (error) {
+      console.log(error.message);
       Router.push("/vote-failed");
     }
   };
@@ -164,6 +165,8 @@ const Vote = () => {
               onCapture={handleCapture}
               onSubmit={handleSubmit}
               timeLeft={<TimeLeft time={time.taken} />}
+              selectedBPH={formData.bph_id}
+              selectedSenator={formData.senator_id}
             />
           </Background>
         </>

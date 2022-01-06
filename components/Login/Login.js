@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import {
   Flex,
   Box,
-  Heading,
+  Image,
   FormControl,
   FormLabel,
   Input,
@@ -40,7 +40,7 @@ const Login = () => {
       }
       router.push("/dashboard");
     }
-  },[loading, authenticated])
+  }, [loading, authenticated]);
 
   useEffect(() => {
     dispatch({ type: actions.STOP_LOADING });
@@ -58,7 +58,7 @@ const Login = () => {
       if (!result) return setBadLogin(true);
 
       if (type === "admin") return router.push("/admin/dashboard");
-      
+
       router.push("/dashboard");
       setBadLogin(false);
     } catch (error) {
@@ -74,17 +74,19 @@ const Login = () => {
         px={8}
         py={4}
         w="30vw"
-        minW="300px"
+        minW="350px"
         my="10vh"
         borderWidth={1}
         borderRadius={8}
         boxShadow="lg"
         bg="white"
       >
-        <Box textAlign="center">
-          <Heading>Login</Heading>
-          <Text fontSize="lg" mt={2}>
-            Pemilu HMTG GEA 2021
+        <Box textAlign="center" alignItems="center" justifyContent="center">
+          <Flex alignItems="center" justifyContent="center">
+          <Image src="/images/hmtg_gea.png" alt="LOGO HMTG GEA" boxSize={["100px", "100px", "150px", "150px"]} borderRadius="5px"  />
+          </Flex>
+          <Text fontSize="lg" mt={4} fontWeight="bold" letterSpacing={1}>
+            PEMILU HMTG "GEA" ITB 2021
           </Text>
         </Box>
         <Box my={6} textAlign="left">

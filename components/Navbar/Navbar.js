@@ -6,6 +6,7 @@ import {
   Button,
   Spacer,
   IconButton,
+  Image,
   Drawer,
   DrawerBody,
   DrawerHeader,
@@ -103,7 +104,10 @@ const Navbar = ({ children, ...props }) => {
         borderBottomWidth={1}
         {...props}
       >
-        <Logo pl={4} pr={4} alignItems="center" display="flex" />
+        {/* <Logo pl={4} pr={4} alignItems="center" display="flex" /> */}
+        <Flex alignItems="center" height="full">
+          <Image src="/images/hmtg_gea.png" boxSize="60px" mr={8} ml={1} userSelect="none" />
+        </Flex>
         <HStack
           spacing="0"
           color="white"

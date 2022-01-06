@@ -83,7 +83,7 @@ const Dashboard = () => {
                 <Heading m={4} size="lg">
                   Panduan Pemilihan
                 </Heading>
-                <OrderedList textAlign={"justify"}>
+                <OrderedList>
                   <ListItem>Klik tombol "Voting Sekarang"</ListItem>
                   <ListItem>Anda akan memasuki halaman pemungutan suara</ListItem>
                   <ListItem>
@@ -110,7 +110,7 @@ const Dashboard = () => {
                   </ListItem>
                 </OrderedList>
               </Container>
-              <Container p={4} w={["100%", "50%", "50%", "50%"]} textAlign={"justify"}>
+              <Container p={4} w={["100%", "50%", "50%", "50%"]}>
                 <UnorderedList>
                   <ListItem>
                     <Text>Belum voting : {voteData ? voteData["Not Voted"] : "-"}</Text>

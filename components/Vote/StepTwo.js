@@ -15,6 +15,8 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
+  OrderedList,
+  ListItem,
 } from "@chakra-ui/react";
 import { RepeatIcon } from "@chakra-ui/icons";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -35,11 +37,29 @@ const Preview = ({ src }) => {
   );
 };
 
-const Photo = ({ timeLeft, onCapture, onSubmit }) => {
+const Selected = ({ selected, data }) => {
+
+  return (
+    <OrderedList>
+      {selected.map((id) =>
+        id === -1 ? (
+          <ListItem>Tidak memilih</ListItem>
+        ) : (
+          <ListItem>
+            {data[id - 1].nim} - {data[id - 1].name}
+          </ListItem>
+        )
+      )}
+    </OrderedList>
+  );
+};
+
+const Photo = ({ timeLeft, onCapture, onSubmit, selectedBPH, selectedSenator }) => {
   const videoRef = useRef(null);
   const [photo, setPhoto] = useState({ captured: false, src: "" });
   const [videoConstraints, setVideoConstraints] = useState(initialConstraints);
   const [loading, setLoading] = useState(false);
+  const [calon, setCalon] = useState({ bph: [], senator: [] });
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [devices, setDevices] = useState({
     devicesList: [],
@@ -54,7 +74,20 @@ const Photo = ({ timeLeft, onCapture, onSubmit }) => {
     });
   };
 
-  useEffect(loadVideoDevices, []);
+  const fetchData = async () => {
+    try {
+      const res = await fetch(`${window.location.origin}/data_paslon.json`);
+      const data = await res.json();
+      setCalon({ bph: data.bph, senator: data.senator });
+    } catch (error) {
+      Router.push("/server-error");
+    }
+  };
+
+  useEffect(() => {
+    loadVideoDevices();
+    fetchData();
+  }, []);
 
   const handleChange = () => {
     let currentIndex = devices.selected;
@@ -92,10 +125,19 @@ const Photo = ({ timeLeft, onCapture, onSubmit }) => {
           <ModalHeader>Konfirmasi Submit</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <Text>
-              Pastikan data vote dan bukti foto yang Anda berikan sudah valid. Dengan mengklik
-              tombol submit, pilihan vote dan bukti foto Anda akan tercatat secara permanen.
-            </Text>
+            <Flex>
+              <Text>
+                Pastikan Anda yakin dengan pilihan Anda serta bukti foto yang Anda berikan sudah
+                valid. Dengan mengklik tombol submit, pilihan vote dan bukti foto Anda akan tercatat
+                secara permanen.
+              </Text>
+            </Flex>
+            <Flex flexDir="column">
+              <Text fontWeight="bold" mt={2}>Prioritas Anda untuk calon ketua BPH:</Text>
+              <Selected selected={selectedBPH} data={calon.bph}/>
+              <Text fontWeight="bold" mt={2}>Prioritas Anda untuk calon senator:</Text>
+              <Selected selected={selectedSenator} data={calon.senator}/>
+            </Flex>
           </ModalBody>
 
           <ModalFooter>
