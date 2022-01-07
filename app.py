@@ -76,10 +76,11 @@ def user_start_vote():
   user = db["users"].find_one({"username":username})
   if user:
     if user["startTime"] != 0:
+      time = (datetime.now() - datetime.datetime(1970, 1, 1)).total_seconds()
       db["users"].find_one_and_update({"username" : username}, {
-          "$set" : {"startTime" : (datetime.now() - datetime.datetime(1970, 1, 1)).total_seconds()}
+          "$set" : {"startTime" : time}
         })
-    return {}, 202
+    return {"startTime" : time}, 202
   else:
     return {}, 400
 
