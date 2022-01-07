@@ -8,7 +8,8 @@ def createUser(db, nim):
       'username' : nim,
       'password' : nim + '_' + sha1(nim.encode()).hexdigest()[:16],
       'isVoted' : 0,
-      'type' : 'user'
+      'type' : 'user',
+      'startTime' : 0
     }
   )
 
@@ -21,7 +22,8 @@ data_user.insert_one({
     "username" : "admin",
     "password" : "admin_" + sha1("admin".encode()).hexdigest()[:16],
     "isVoted" : 4,
-    "type" : "admin"
+    "type" : "admin",
+    'startTime' : 0
   })
 
 list_nim = [

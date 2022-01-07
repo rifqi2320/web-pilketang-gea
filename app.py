@@ -69,6 +69,20 @@ def get_user_data():
   else:
     return {}, 400
 
+@app.route("/start_voting", methods=["POST"])
+@jwt_required()
+def user_start_vote():
+  username = get_jwt_identity()
+  user = db["users"].find_one({"username":username})
+  if user:
+    if user["startTime"] != 0:
+      db["users"].find_one_and_update({"username" : username}, {
+          "$set" : {"startTime" : (datetime.now() - datetime.datetime(1970, 1, 1)).total_seconds()}
+        })
+    return {}, 202
+  else:
+    return {}, 400
+
 @app.route("/vote", methods=['POST'])
 @jwt_required()
 def vote():
