@@ -75,7 +75,7 @@ def user_start_vote():
   username = get_jwt_identity()
   user = db["users"].find_one({"username":username})
   if user:
-    time = (datetime.now() - datetime.datetime(1970, 1, 1)).total_seconds()
+    time = (datetime.now() - datetime(1970, 1, 1)).total_seconds()
     if user["startTime"] != 0:
       db["users"].find_one_and_update({"username" : username}, {
           "$set" : {"startTime" : time}
@@ -87,6 +87,7 @@ def user_start_vote():
 @app.route("/vote", methods=['POST'])
 @jwt_required()
 def vote():
+  global drive
   if not isVoting:
     return {}, 401
   username = get_jwt_identity()
@@ -100,18 +101,36 @@ def vote():
     timeTaken = request.json.get('timeTaken')
     status = request.json.get('status_code')
     if not status:
-      im = Image.open(BytesIO(b64decode(img_data.split("data:image/jpeg;base64,")[1])))
-      im.save("static/uploads/temp.jpg")
-      photo = drive.CreateFile(
-        {
-          "title" : "{}".format(username),
-          "parents" : [{'id' : "1-pkpOj-PbWrOaUfHoeqvrsUvS-f1D126" }]
-        }
-      )
-      photo.SetContentFile("static/uploads/temp.jpg")
-      photo.Upload()
-      photo.FetchMetadata()
-      link = photo.metadata['alternateLink'].replace("https://drive.google.com/file/d/", "https://drive.google.com/uc?export=view&id=").replace("/view?usp=drivesdk", "")
+      try:
+        im = Image.open(BytesIO(b64decode(img_data.split("data:image/jpeg;base64,")[1])))
+        im.save("static/uploads/temp.jpg")
+        photo = drive.CreateFile(
+          {
+            "title" : "{}".format(username),
+            "parents" : [{'id' : "1-pkpOj-PbWrOaUfHoeqvrsUvS-f1D126" }]
+          }
+        )
+        photo.SetContentFile("static/uploads/temp.jpg")
+        photo.Upload()
+        photo.FetchMetadata()
+        link = photo.metadata['alternateLink'].replace("https://drive.google.com/file/d/", "https://drive.google.com/uc?export=view&id=").replace("/view?usp=drivesdk", "")
+      except:
+        gauth = GoogleAuth()
+        scope = ["https://www.googleapis.com/auth/drive"]
+        gauth.credentials = ServiceAccountCredentials.from_json_keyfile_name('client_secrets.json', scope)
+        drive = GoogleDrive(gauth)
+        im = Image.open(BytesIO(b64decode(img_data.split("data:image/jpeg;base64,")[1])))
+        im.save("static/uploads/temp.jpg")
+        photo = drive.CreateFile(
+          {
+            "title" : "{}".format(username),
+            "parents" : [{'id' : "1-pkpOj-PbWrOaUfHoeqvrsUvS-f1D126" }]
+          }
+        )
+        photo.SetContentFile("static/uploads/temp.jpg")
+        photo.Upload()
+        photo.FetchMetadata()
+        link = photo.metadata['alternateLink'].replace("https://drive.google.com/file/d/", "https://drive.google.com/uc?export=view&id=").replace("/view?usp=drivesdk", "")
     else:
       link = ""
     vote = {
