@@ -1,0 +1,30 @@
+{
+  "bph": [
+    {
+      "id": "1",
+      "name": "MUHAMAD RAIHAN",
+      "nim": "12019077",
+      "photo": "./images/Raihan.jpg"
+    },
+    {
+      "id": "2",
+      "name": "AHMAD FITRA ALKAUTSAR",
+      "nim": "12019081",
+      "photo": "./images/Fitra.jpg"
+    }
+  ],
+  "senator": [
+    {
+      "id": "1",
+      "name": "ANDI MUHAMMAD ZULQARNAIN",
+      "nim": "12019046",
+      "photo": "./images/Andi.jpg"
+    },
+    {
+      "id": "2",
+      "name": "MARISSA SHARON CAESARIA",
+      "nim": "12019055",
+      "photo": "./images/Sharon.jpg"
+    }
+  ]
+}
