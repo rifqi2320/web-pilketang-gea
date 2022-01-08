@@ -6,7 +6,7 @@ export const getVoteStat = async () => {
 };
 
 export const getPaslonData = async () => {
-  const res = await fetch("https://pemilugea2021.xyz/data_paslon.json");
+  const res = await fetch("https://pemilugea2021.xyz/data_paslon_mock.json");
   const data = await res.json();
   return data;
 };

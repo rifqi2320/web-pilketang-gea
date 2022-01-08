@@ -11,7 +11,7 @@ const StepZero = ({ timeLeft, onNext, changeStep }) => {
 
   const fetchData = async () => {
     try {
-      const res = await fetch(`${window.location.origin}/data_paslon.json`);
+      const res = await fetch(`${window.location.origin}/data_paslon_mock.json`);
       const data = await res.json();
       setAllCandidates(data.bph);
       setSelectedCandidates(new Array(2).fill(-1));
