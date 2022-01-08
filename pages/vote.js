@@ -51,22 +51,25 @@ const Vote = () => {
     setTime({ ...time, taken: time.taken + 1 });
   };
 
+  const fetchTime = async () => {
+    try {
+      const result = await API.post("/start_voting");
+      const delta = Math.floor((Date.now() - result.data.startTime * 1000) / 1000);
+
+      setTime({ start: result.data.startTime * 1000, taken: delta });
+    } catch (error) {
+      Router.push("/vote-failed");
+    }
+  };
+
   useEffect(() => {
     const voteEnabled = localStorage.getItem("vote_enabled");
-    let startTime = localStorage.getItem("startTime");
 
     if (voteEnabled === "false" || !voteEnabled) {
       return Router.push("/dashboard");
+    } else {
+      fetchTime();
     }
-
-    if (!startTime) {
-      startTime = Date.now();
-      localStorage.setItem("startTime", startTime);
-      return setTime({ start: startTime, taken: 0 });
-    }
-
-    const delta = Math.floor((Date.now() - startTime) / 1000);
-    setTime({ start: startTime, taken: delta });
   }, []);
 
   useEffect(() => {
@@ -93,7 +96,6 @@ const Vote = () => {
         timeTaken: timeTaken,
         status_code: 1,
       });
-      localStorage.removeItem("startTime");
       if (result) Router.push("/vote-submitted");
     } catch (error) {
       Router.push("/vote-submitted");
@@ -116,7 +118,6 @@ const Vote = () => {
     try {
       const timeTaken = Math.floor((Date.now() - time.start) / 1000);
       const form = { ...formData, timeTaken: timeTaken, status_code: 0 };
-      localStorage.removeItem("startTime");
       const result = await API.post("/vote", form);
       if (result) {
         return Router.push("/vote-success");
