@@ -75,11 +75,13 @@ def user_start_vote():
   username = get_jwt_identity()
   user = db["users"].find_one({"username":username})
   if user:
-    time = (datetime.now() - datetime(1970, 1, 1)).total_seconds()
     if user["startTime"] == 0:
+      time = (datetime.now() - datetime(1970, 1, 1)).total_seconds()
       db["users"].find_one_and_update({"username" : username}, {
           "$set" : {"startTime" : time}
         })
+    else:
+      time = user["startTime"]
     return {"startTime" : time}, 202
   else:
     return {}, 400
