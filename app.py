@@ -149,11 +149,17 @@ def vote():
     db["votes"].insert_one(vote)
     if link == "":
       db["users"].find_one_and_update({"username" : username}, {
-        "$set" : {"isVoted" : 3}
+        "$set" : {
+          "isVoted" : 3,
+          "startTime" : 0
+        }
       })
     else:
       db["users"].find_one_and_update({"username" : username}, {
-        "$set" : {"isVoted" : 1}
+        "$set" : {
+          "isVoted" : 1,
+          "startTime" : 0
+        }
       })
     return {}, 202
   else:
