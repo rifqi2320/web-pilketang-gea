@@ -76,7 +76,7 @@ const Photo = ({ timeLeft, onCapture, onSubmit, selectedBPH, selectedSenator }) 
 
   const fetchData = async () => {
     try {
-      const res = await fetch(`${window.location.origin}/data_paslon_mock.json`);
+      const res = await fetch(`${window.location.origin}/data_paslon.json`);
       const data = await res.json();
       setCalon({ bph: data.bph, senator: data.senator });
     } catch (error) {
