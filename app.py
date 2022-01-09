@@ -316,7 +316,7 @@ def get_status_votes():
   users = db["users"].find({})
   status_votes = {
     "Not Voted" : 0,
-    "Voted" : 0,
+    "Voted" : -1,
     "In Progress" : 0,
     "Validated" : -1,
     "Rejected" : 0,
