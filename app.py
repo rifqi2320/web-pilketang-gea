@@ -328,12 +328,16 @@ def get_status_votes():
       status_votes["Not Voted"] += 1
     elif temp["isVoted"] == 1:
       status_votes["In Progress"] += 1
+      status_votes["Voted"] += 1
     elif temp["isVoted"] == 2:
       status_votes["Rejected"] += 1
+      status_votes["Voted"] += 1
     elif temp["isVoted"] == 3:
       status_votes["Rejected"] += 1
+      status_votes["Voted"] += 1
     elif temp["isVoted"] == 4:
       status_votes["Validated"] += 1
+      status_votes["Voted"] += 1
   return status_votes, 200
 
 
