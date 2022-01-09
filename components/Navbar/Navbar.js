@@ -118,7 +118,7 @@ const Navbar = ({ children, ...props }) => {
           display={["none", "none", "flex", "flex"]}
         >
           <DesktopMenuItem to="/dashboard">Dashboard</DesktopMenuItem>
-          <DesktopMenuItem to="/count-bph">Hasil Counting</DesktopMenuItem>
+          <DesktopMenuItem to="/count-senator">Hasil Counting</DesktopMenuItem>
           {user === "admin" ? (
             <DesktopMenuItem to="/admin/dashboard">Dashboard Admin</DesktopMenuItem>
           ) : null}
@@ -157,7 +157,7 @@ const Navbar = ({ children, ...props }) => {
             </DrawerHeader>
             <DrawerBody>
               <MobileMenuItem to="/dashboard">Dashboard</MobileMenuItem>
-              <MobileMenuItem to="/count-bph">Hasil Counting</MobileMenuItem>
+              <MobileMenuItem to="/count-senator">Hasil Counting</MobileMenuItem>
               {user === "admin" ? (
                 <MobileMenuItem to="/admin/dashboard">Dashboard Admin</MobileMenuItem>
               ) : null}

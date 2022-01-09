@@ -32,7 +32,7 @@ const Count = ({ mode }) => {
   const router = useRouter();
 
   const nextMode = () => {
-    if (mode != "Senator") {
+    if (mode == "Senator") {
       axios
         .post(
           "https://backend-pilketang-gea.azurewebsites.net/stop_count",
@@ -51,7 +51,7 @@ const Count = ({ mode }) => {
           );
         })
         .then(() => {
-          router.push("count-senator");
+          router.push("count-bph");
         });
     }
   };
@@ -203,7 +203,7 @@ const Count = ({ mode }) => {
                 })
               : ""}
           </Flex>
-          {isDone && mode !== "Senator" ? (
+          {isDone && mode === "Senator" ? (
             <Button mb={8} colorScheme={"orange"} variant={"outline"} onClick={nextMode}>
               Next
             </Button>
