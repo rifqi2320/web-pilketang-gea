@@ -2,29 +2,29 @@
   "bph": [
     {
       "id": "1",
-      "name": "CALON BPH 1",
-      "nim": "12019000",
-      "photo": "./images/avatar_placeholder.jpg"
+      "name": "MUHAMAD RAIHAN",
+      "nim": "12019077",
+      "photo": "./images/Raihan.jpg"
     },
     {
       "id": "2",
-      "name": "CALON BPH 2",
-      "nim": "12019000",
-      "photo": "./images/avatar_placeholder.jpg"
+      "name": "AHMAD FITRA ALKAUTSAR",
+      "nim": "12019081",
+      "photo": "./images/Fitra.jpg"
     }
   ],
   "senator": [
     {
       "id": "1",
-      "name": "CALON SENATOR 1",
-      "nim": "12019000",
-      "photo": "./images/avatar_placeholder.jpg"
+      "name": "ANDI MUHAMMAD ZULQARNAIN",
+      "nim": "12019046",
+      "photo": "./images/Andi.jpg"
     },
     {
       "id": "2",
-      "name": "CALON SENATOR 2",
-      "nim": "12019000",
-      "photo": "./images/avatar_placeholder.jpg"
+      "name": "MARISSA SHARON CAESARIA",
+      "nim": "12019055",
+      "photo": "./images/Sharon.jpg"
     }
   ]
 }
