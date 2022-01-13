@@ -121,7 +121,10 @@ const Dashboard = () => {
                     </Text>
                   </ListItem>
                   <ListItem>
-                    <Text>Suara tervalidasi : {voteData ? voteData["Voted"] : "-"}</Text>
+                    <Text>
+                      Suara tervalidasi :
+                      {voteData ? voteData["Validated"] + voteData["Rejected"] : "-"}
+                    </Text>
                   </ListItem>
                 </UnorderedList>
                 <Text my={4}>
