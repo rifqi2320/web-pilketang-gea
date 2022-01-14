@@ -6,7 +6,7 @@ const dashboard = () => {
   return (
     <>
     <Head>
-      <title>Dashboard - PEMILU HMTG "GEA" 2021</title>
+      <title>Dashboard - PEMILU HMTG "GEA" ITB 2021</title>
     </Head>
       <Navbar />
       <Dashboard />

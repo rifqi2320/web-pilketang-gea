@@ -6,7 +6,7 @@ const Success = () => {
   return (
     <>
       <Head>
-        <title>Vote Success - PEMILU HMTG "GEA" 2021</title>
+        <title>Vote Success - PEMILU HMTG "GEA" ITB 2021</title>
       </Head>
       <VoteSuccess />
     </>

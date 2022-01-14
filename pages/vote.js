@@ -141,7 +141,7 @@ const Vote = () => {
       return (
         <>
           <Head>
-            <title>Vote Calon BPH - PEMILU HMTG "GEA" 2021</title>
+            <title>Vote Calon BPH - PEMILU HMTG "GEA" ITB 2021</title>
           </Head>
           <Navbar />
           <Background minH="100vh">
@@ -158,7 +158,7 @@ const Vote = () => {
       return (
         <>
           <Head>
-            <title>Vote Calon Senator - PEMILU HMTG "GEA" 2021</title>
+            <title>Vote Calon Senator - PEMILU HMTG "GEA" ITB 2021</title>
           </Head>
           <Navbar />
           <Background minH="100vh">
@@ -175,7 +175,7 @@ const Vote = () => {
       return (
         <>
           <Head>
-            <title>Bukti Foto - PEMILU HMTG "GEA" 2021</title>
+            <title>Bukti Foto - PEMILU HMTG "GEA" ITB 2021</title>
           </Head>
           <Navbar />
           <Background minH="100vh">

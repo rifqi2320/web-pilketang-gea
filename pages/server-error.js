@@ -6,7 +6,7 @@ const Error = () => {
   return (
     <>
       <Head>
-        <title>Server Error - PEMILU HMTG "GEA" 2021</title>
+        <title>Server Error - PEMILU HMTG "GEA" ITB 2021</title>
       </Head>
       <ServerError />
     </>

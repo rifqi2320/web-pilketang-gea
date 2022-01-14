@@ -7,7 +7,7 @@ const count = () => {
   return (
     <>
       <Head>
-        <title>Hasil Vote Calon Senator - PEMILU HMTG "GEA" 2021</title>
+        <title>Hasil Vote Calon Senator - PEMILU HMTG "GEA" ITB 2021</title>
       </Head>
       <Navbar />
       <Count mode={"Senator"} />

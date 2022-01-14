@@ -167,7 +167,7 @@ const Navbar = ({ children, ...props }) => {
             </DrawerBody>
             <Spacer />
             <Text p={4} textAlign="center" fontWeight="semibold">
-              Pemilu HMTG "GEA" 2021
+              Pemilu HMTG "GEA" ITB 2021
             </Text>
           </DrawerContent>
         </Drawer>

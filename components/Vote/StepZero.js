@@ -57,7 +57,7 @@ const StepZero = ({ timeLeft, onNext, changeStep }) => {
           <Stack width="full" alignContent="center" p={4}>
             <Flex borderWidth={1} borderColor="#f4f4f4" width="full" borderRadius={4}>
               <Heading m={12} mt={2} mb={2} textAlign="center" width="full">
-                Vote Calon Ketua Umum BPH HMTG "GEA" 2021
+                Vote Calon Ketua Umum BPH HMTG "GEA" ITB 2021
               </Heading>
             </Flex>
             <Flex flexDir="column">

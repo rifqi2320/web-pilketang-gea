@@ -68,7 +68,7 @@ const Dashboard = () => {
             color="white"
           >
             <Heading size="xl" m={2} align="center" w="full">
-              Pemilu HMTG "GEA" 2021
+              Pemilu HMTG "GEA" ITB 2021
             </Heading>
             <Heading size="xl" m={2}></Heading>
           </Stack>
@@ -122,8 +122,7 @@ const Dashboard = () => {
                   </ListItem>
                   <ListItem>
                     <Text>
-                      Suara tervalidasi : 
-                      {voteData ? voteData["Validated"] + voteData["Rejected"] : "-"}
+                      Suara tervalidasi : {voteData ? voteData["Validated"] + voteData["Rejected"] : "-"}
                     </Text>
                   </ListItem>
                 </UnorderedList>

@@ -7,7 +7,7 @@ const login = () => {
   return (
     <div>
       <Head>
-        <title>Login - PEMILU HMTG "GEA" 2021</title>
+        <title>Login - PEMILU HMTG "GEA" ITB 2021</title>
       </Head>
       <Container bg="#f4f4f4" minW="100vw" minH="100vh" centerContent>
         <Login />

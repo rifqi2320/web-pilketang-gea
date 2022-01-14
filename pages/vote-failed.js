@@ -6,7 +6,7 @@ const Failed = () => {
   return (
     <>
       <Head>
-        <title>Vote Failed - PEMILU HMTG "GEA" 2021</title>
+        <title>Vote Failed - PEMILU HMTG "GEA" ITB 2021</title>
       </Head>
       <VoteFailed />
     </>
