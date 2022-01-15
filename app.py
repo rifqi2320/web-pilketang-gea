@@ -391,10 +391,10 @@ def get_vote(arrVote, BPH):
     if paslon == -1:
       continue
     if BPH:
-      if tempBPH[paslon]:
+      if tempBPH[paslon - 1]:
         return paslon
     else:
-      if tempSenator[paslon]:
+      if tempSenator[paslon - 1]:
         return paslon
   return -1
 
@@ -410,10 +410,10 @@ def count(t, n):
   for vote in tempVote[:n]:
     x = get_vote(vote["bph_id"], True)
     if x >= 0:
-      tempCount["bph"][x] += 1
+      tempCount["bph"][x-1] += 1
     y = get_vote(vote["senator_id"], False)
     if y >= 0:
-      tempCount["senator"][y] += 1
+      tempCount["senator"][y-1] += 1
   return tempCount
 
 @app.route("/get_count")
